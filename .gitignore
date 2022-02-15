@@ -348,3 +348,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+src/BlogCore.Authority/appsettings.Development.json
+src/BlogCoreHang/appsettings.Development.json
+src/BlogCore/appsettings.Development.json
+src/BlogCore/appsettings.json
+src/BlogCore.Authority/appsettings.json

@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BlogCore.Authority</name>
+    </assembly>
+    <members>
+        <member name="T:BlogCore.Authority.BlogControllerBase">
+            <summary>
+            控制器基类
+            </summary>
+        </member>
+        <member name="P:BlogCore.Authority.BlogControllerBase.CurrentUser">
+            <summary>
+            获取当前用户信息
+            </summary>
+        </member>
+        <member name="T:BlogCore.Authority.Controllers.OAuthController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.#ctor(BlogCore.Application.UserInfo.IUserInfoAppService,BlogCore.Application.SignInfo.ISignInfoAppService)">
+            <summary>
+            
+            </summary>
+            <param name="userInfoAppService"></param>
+            <param name="signInfoAppService"></param>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.Login(BlogCore.Application.UserInfo.Dtos.UserSearchDto)">
+            <summary>
+            登录授权
+            </summary>
+            <param name="userDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.LogOut">
+            <summary>
+            注销
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.AddUserInfoAsync(BlogCore.Application.UserInfo.Dtos.AdverUserInfoDto,System.Threading.CancellationToken)">
+            <summary>
+            新增用户信息
+            </summary>
+            <param name="req">req</param>
+            <param name="cancellationToken">cancellationToken</param>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.GetAuthenticate(System.Threading.CancellationToken)">
+            <summary>
+            获取当前用户 (检测是否登录)
+            </summary>
+            <param name="cancellationToken">cancellationToken</param>
+            <returns></returns>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.GetMenus(System.Threading.CancellationToken)">
+            <summary>
+            获取当前用户所属菜单
+            </summary>
+            <param name="cancellationToken">cancellationToken</param>
+            <returns></returns>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.UpdatePassword(BlogCore.Application.UserInfo.Dtos.UpdatePasswordInput,System.Threading.CancellationToken)">
+            <summary>
+            更改密码
+            </summary>
+            <param name="cancellationToken">cancellationToken</param>
+            <param name="input">input</param>
+            <returns></returns>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.CreateSignInfo">
+            <summary>
+            创建API签名
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.CreateSignInfoPost">
+            <summary>
+            创建API签名
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.AESEncrypt(System.String,System.String,System.String)">
+            <summary>
+            AES加密
+            </summary>
+            <param name="str"></param>
+            <param name="key"></param>
+            <param name="iv"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.AESDecrypt(System.String,System.String,System.String)">
+            <summary>
+            AES解密
+            </summary>
+            <param name="str"></param>
+            <param name="key"></param>
+            <param name="iv"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.DESEncrypt(System.String,System.String,System.String)">
+            <summary>
+            DES加密
+            </summary>
+            <param name="str"></param>
+            <param name="key"></param>
+            <param name="iv"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BlogCore.Authority.Controllers.OAuthController.DESDecrypt(System.String,System.String,System.String)">
+            <summary>
+            DES解密
+            </summary>
+            <param name="str"></param>
+            <param name="key"></param>
+            <param name="iv"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BlogCore.Authority.Startup">
+            <summary>
+            项目启动文件
+            </summary>
+        </member>
+        <member name="P:BlogCore.Authority.Startup.Configuration">
+            <summary>
+            配置文件
+            </summary>
+        </member>
+        <member name="P:BlogCore.Authority.Startup.AutofacContainer">
+            <summary>
+            AotoFac容器
+            </summary>
+        </member>
+        <member name="F:BlogCore.Authority.Startup.EFLoggerFactory">
+            <summary>
+            EF打印SQL
+            </summary>
+        </member>
+        <member name="M:BlogCore.Authority.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            项目启动文件
+            </summary>
+            <param name="configuration"></param>
+            <param name="env"></param>
+        </member>
+        <member name="M:BlogCore.Authority.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            在ConfigureServices中注册依赖项。
+            在下面的ConfigureContainer方法之前由运行时调用。
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:BlogCore.Authority.Startup.ConfigureContainer(Autofac.ContainerBuilder)">
+            <summary>
+            您可以在ConfigureContainer中直接注册内容
+            使用Autofac。 这在ConfigureServices之后运行
+            这里将覆盖在ConfigureServices中进行的注册。
+            不要建造容器; 为你做完了。 如果你
+            需要对容器的引用，你需要使用
+            后面会显示“没有ConfigureContainer”机制。
+            </summary>
+            <param name="builder"></param>
+        </member>
+        <member name="M:BlogCore.Authority.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            配置是添加中间件的位置。 这称之为 ConfigureContainer
+            您可以使用IApplicationBuilder.ApplicationServices
+            如果你需要从容器中解决问题
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
+        </member>
+    </members>
+</doc>

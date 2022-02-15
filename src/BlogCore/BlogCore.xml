@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BlogCore</name>
+    </assembly>
+    <members>
+        <member name="M:BlogCore.Controllers.AdverUserController.GetUserInfoAsync(BlogCore.Application.AdverUserHandler.Model.AdverUserInfoModel,System.Threading.CancellationToken)">
+            <summary>
+            获取用户信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:BlogCore.Startup.Configuration">
+            <summary>
+            配置文件
+            </summary>
+        </member>
+        <member name="P:BlogCore.Startup.AutofacContainer">
+            <summary>
+            AotoFac容器
+            </summary>
+        </member>
+        <member name="F:BlogCore.Startup.EFLoggerFactory">
+            <summary>
+            EF打印SQL
+            </summary>
+        </member>
+    </members>
+</doc>
