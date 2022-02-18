@@ -1,11 +1,11 @@
 ﻿// 创建人：魏天华 
 // 测试添加代码文件头
 
-using BlogCore.Application.SignInfo.Dtos;
-using BlogCore.Domain.Comm.Dto;
-using BlogCore.Domain.Enums;
+using BlogCore.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,11 +13,6 @@ using System.Text;
 using System.Threading.Tasks;
 using witeem.CoreHelper.ExtensionTools.CommonTools;
 using witeem.CoreHelper.Redis;
-using Newtonsoft.Json;
-using BlogCore.Core;
-using witeem.CoreHelper.ExtensionTools;
-using Microsoft.Extensions.Options;
-using System.Linq;
 
 namespace BlogCore.Application.SignInfo
 {
@@ -46,14 +41,6 @@ namespace BlogCore.Application.SignInfo
             string nonce = Guid.NewGuid().ToString();
             var secretKey = await GetSecretKey(httpContext);
             string sign = EncyptHelper.MD5(secretKey + timeSpan + nonce);
-            SignAuthorityDto dto = new SignAuthorityDto()
-            {
-                TimeSpan = timeSpan,
-                Nonce = nonce,
-                SecretKey = secretKey
-            };
-
-            await _redisManager.SetAsync<SignAuthorityDto>(sign, dto, TimeSpan.FromMinutes(10));
             return new { TimeSpan = timeSpan, Nonce = nonce, Sign = sign };
         }
 
