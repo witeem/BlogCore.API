@@ -24,5 +24,5 @@ stages:
       displayName: Build an image
       inputs:
         command: build
-        dockerfile: '$(Build.SourcesDirectory)/src/BlogCore.Authority/Dockerfile'
+        dockerfile: '**/Dockerfile'
         tags: latest
