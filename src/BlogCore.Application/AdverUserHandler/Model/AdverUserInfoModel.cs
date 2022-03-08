@@ -7,7 +7,7 @@ using MediatR;
 
 namespace BlogCore.Application.AdverUserHandler.Model
 {
-    public class AdverUserInfoModel : IRequest<string>
+    public class AdverUserInfoModel : IRequest<AdverUserInfoDto>
     {
         public ModelTypeEnum Type { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿// 创建人：魏天华 
 // 测试添加代码文件头
 
+using BlogCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,7 +20,7 @@ namespace BlogCore.Domain.Comm.Dto
         {
             ApiResponce<T> responce = new ApiResponce<T>()
             {
-                Code = 200,
+                Code = (int)ApiResponceEnum.Succeed,
                 Data = datas,
                 Msg = msg
             };

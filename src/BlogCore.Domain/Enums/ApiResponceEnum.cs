@@ -9,6 +9,7 @@ namespace BlogCore.Domain.Enums
 {
     public enum ApiResponceEnum
     {
+        Succeed = 200,
         UnAuthorization = 1401,
         Undefind = 1404,
         Error = 1502,

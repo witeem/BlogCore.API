@@ -15,6 +15,7 @@ namespace BlogCore.Application.Maps
         {
             CreateMap<AdverUserInfo, AdverUserInfoDto>().ReverseMap();
             CreateMap<AdverRoleInfo, AdverRoleInfoDto>().ReverseMap();
+            CreateMap<BloggerInfo, BloggerInfoDto>().ReverseMap();
 
             //以下使用AutoMapAttribute映射，详见Dto
             //CreateMap<AdverUserInfo, AdverUserInfoDto>()

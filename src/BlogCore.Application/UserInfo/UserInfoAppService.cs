@@ -73,6 +73,7 @@ namespace BlogCore.Application.UserInfo
         /// <returns></returns>
         public async Task<ApiResponce<AdverUserInfo>> GetAuthenticate()
         {
+            await Task.CompletedTask;
             var currentUser = NullDySession.Instance.CurrentUser;
             if (currentUser != null)
             {

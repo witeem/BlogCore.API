@@ -5,6 +5,7 @@ using AutoMapper;
 using BlogCore.Application.AdverUserHandler.Enums;
 using BlogCore.Application.AdverUserHandler.Model;
 using BlogCore.Application.UserInfo;
+using BlogCore.Application.UserInfo.Dtos;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using witeem.CoreHelper.ExtensionTools.CommonTools;
 
 namespace BlogCore.Application.AdverUserHandler
 {
-    public class AdverUserHandler : BaseHandler, IRequestHandler<AdverUserInfoModel, string> 
+    public class AdverUserHandler : BaseHandler, IRequestHandler<AdverUserInfoModel, AdverUserInfoDto> 
     {
         private readonly IMapper _mapper;
         private readonly IUserInfoAppService _userInfoAppService;
@@ -22,20 +23,20 @@ namespace BlogCore.Application.AdverUserHandler
             _userInfoAppService = userInfoAppService;
         }
 
-        public async Task<string> Handle(AdverUserInfoModel request, CancellationToken cancellationToken)
+        public async Task<AdverUserInfoDto> Handle(AdverUserInfoModel request, CancellationToken cancellationToken)
         {
             switch (request.Type)
             {
                 case ModelTypeEnum.Add:
-                    return (await _userInfoAppService.AddUserInfoAsync(request.AddParams)).ToJson();
+                    return (await _userInfoAppService.AddUserInfoAsync(request.AddParams)).Data;
                 case ModelTypeEnum.Update:
-                    return "";
+                    return null;
                 case ModelTypeEnum.Del:
-                    return "";
+                    return null;
                 case ModelTypeEnum.Query:
-                    return (await _userInfoAppService.GetUserInfoAsync(request.SearchParams)).ToJson();
+                    return (await _userInfoAppService.GetUserInfoAsync(request.SearchParams)).Data;
                 default:
-                    return "";
+                    return null;
             }
             
         }

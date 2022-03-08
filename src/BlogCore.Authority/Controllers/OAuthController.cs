@@ -1,11 +1,14 @@
 ﻿using BlogCore.Application.SignInfo;
 using BlogCore.Application.UserInfo;
 using BlogCore.Application.UserInfo.Dtos;
+using BlogCore.Domain.Comm.Dto;
+using BlogCore.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using witeem.CoreHelper.ExtensionTools.CommonTools;
 
 namespace BlogCore.Authority.Controllers
 {
@@ -22,7 +25,7 @@ namespace BlogCore.Authority.Controllers
         /// </summary>
         /// <param name="userInfoAppService"></param>
         /// <param name="signInfoAppService"></param>
-        public OAuthController(IUserInfoAppService userInfoAppService, ISignInfoAppService signInfoAppService):base()
+        public OAuthController(IUserInfoAppService userInfoAppService, ISignInfoAppService signInfoAppService) : base()
         {
             _userInfoAppService = userInfoAppService;
             _signInfoAppService = signInfoAppService;
@@ -47,19 +50,16 @@ namespace BlogCore.Authority.Controllers
                 Response.Cookies.Append($"sso-token", tokenString.Data);
                 #endregion
 
-                return Ok(new
+                return Ok(ApiResponce<object>.Success(new
                 {
+                    success = true,
                     access_token = tokenString.Data,
                     token_type = "Bearer"
-                });
+                }));
             }
             catch (Exception ex)
             {
-                return Ok(new
-                {
-                    access_token = "",
-                    token_type = "Bearer"
-                });
+                return Ok(ApiResponce<object>.Fail((int)ApiResponceEnum.Error, "请求失败"));
             }
         }
 
