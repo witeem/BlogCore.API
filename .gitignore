@@ -355,3 +355,4 @@ src/BlogCore/appsettings.Development.json
 src/BlogCore/appsettings.json
 src/BlogCore.Authority/appsettings.json
 azure-pipelines.yml
+azure-pipelines-1.yml
