@@ -20,9 +20,7 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: Docker@2
-      displayName: Build an image
+    - task: CmdLine@2
       inputs:
-        command: build
-        dockerfile: '**/Dockerfile'
-        tags: latest
+        script: cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/src/
+    
