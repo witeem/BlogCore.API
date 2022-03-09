@@ -34,7 +34,7 @@ stages:
         sshEndpoint: 'myssh'
         runOptions: 'inline'
         inline: |
-          sudo docker kill blogwapi
+          sudo docker kill blogapi
           sudo docker rm blogapi
           sudo docker rmi witeem/blogcore
           sudo docker pull witeem/blogcore
