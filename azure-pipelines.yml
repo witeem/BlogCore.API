@@ -22,5 +22,5 @@ stages:
     steps:
     - task: CmdLine@2
       inputs:
-        script: 'echo $pwd'
+        script: cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/src/
     
