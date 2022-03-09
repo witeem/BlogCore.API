@@ -29,4 +29,17 @@ stages:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         tags: latest
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'myssh'
+        runOptions: 'inline'
+        inline: |
+          sudo docker kill blogwapi
+          sudo docker rm blogapi
+          sudo docker rmi witeem/blogcore:latest
+          sudo docker pull witeem/blogcore:latest
+          sudo docker run -it --name blogapi -p 9001:80 -d witeem/blogcore:latest
+        failOnStdErr: false
+        interactiveSession: true
+        readyTimeout: '20000'
     
