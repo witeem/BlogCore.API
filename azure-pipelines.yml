@@ -22,5 +22,11 @@ stages:
     steps:
     - task: CmdLine@2
       inputs:
-        script: cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/src/
+        script: cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        tags: latest
     
