@@ -48,6 +48,11 @@ namespace BlogCore.Application.MyMiddleware
             await _next(context);
         }
 
+        /// <summary>
+        /// 附加用户到上下文
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="token"></param>
         private void AttachUserToContext(HttpContext context, string token)
         {
             try
@@ -80,7 +85,7 @@ namespace BlogCore.Application.MyMiddleware
                 var claimsIdentity = new ClaimsIdentity(new Claim[] { new Claim(OAuthConsts.OAuthUser, jwtPayload) });
                 Thread.CurrentPrincipal = new ClaimsPrincipal(claimsIdentity);
 
-                // attach user to context on successful jwt validation
+                // 将用户附加到成功 jwt 验证的上下文
                 context.Items["User"] = adverUser;
             }
             catch (Exception ex)

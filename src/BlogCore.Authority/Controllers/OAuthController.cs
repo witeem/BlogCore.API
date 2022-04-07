@@ -46,8 +46,9 @@ namespace BlogCore.Authority.Controllers
                 if (user == null) return Unauthorized();
                 #region 生成token令牌
                 var tokenString = await _userInfoAppService.GetJwtToken(user.Data);
+
                 // 把token写入cookie
-                Response.Cookies.Append($"sso-token", tokenString.Data);
+                Response.Cookies.Append($"sso-token", tokenString.Data, new Microsoft.AspNetCore.Http.CookieOptions { Domain = ".witeemv.cn", Path="/" });
                 #endregion
 
                 return Ok(ApiResponce<object>.Success(new

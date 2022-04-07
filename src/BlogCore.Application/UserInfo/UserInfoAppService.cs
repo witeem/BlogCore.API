@@ -58,9 +58,11 @@ namespace BlogCore.Application.UserInfo
         /// <returns></returns>
         public async Task<ApiResponce<bool>> LogOut()
         {
+            // 当前会话对象，当currentUser不为null。 则表示Token校验通过
             var currentUser = NullDySession.Instance.CurrentUser;
             if (currentUser != null)
             {
+                // 删除当前用户存储在Redis的缓存信息
                 await _redisManager.DelAsync(currentUser.Phone + currentUser.Password);
             }
 

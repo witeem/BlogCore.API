@@ -64,18 +64,22 @@ namespace BlogCore.Domain.DomainServices.Advertisement
             await Task.CompletedTask;
         }
 
+        /// <summary>
+        /// 创建Token 令牌
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <returns></returns>
         public async Task<string> GetJwtToken(AdverUserInfo userInfo)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var authTime = DateTime.UtcNow;
             var expiresAt = authTime.AddHours(2);
             IDictionary<string, object> claims = new Dictionary<string, object>();
-
-            var tokenDescriptor = SetTokenDescriptor(userInfo, authTime, expiresAt, claims);
+            var tokenDescriptor = SetTokenDescriptor(userInfo, authTime, expiresAt, claims); // token 描述
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
-            await _redisManager.SetAsync<AdverUserInfo>(userInfo.Phone + userInfo.Password, userInfo);
-            await _redisManager.ExpireAsync(userInfo.Phone + userInfo.Password, TimeSpan.FromHours(2));
+            await _redisManager.SetAsync<AdverUserInfo>(userInfo.Phone + userInfo.Password, userInfo); // 用户登录状态存储
+            await _redisManager.ExpireAsync(userInfo.Phone + userInfo.Password, TimeSpan.FromHours(2)); 
             return tokenString;
         }
 

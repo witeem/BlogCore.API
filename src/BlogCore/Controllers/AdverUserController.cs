@@ -28,6 +28,11 @@ namespace BlogCore.Controllers
         public async Task<IActionResult> GetUserInfoAsync([FromBody] AdverUserInfoModel req, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(req);
+
+            // 当result已经被 ApiResponce<object>.Success嵌套时
+            // return Ok(result);
+
+            // 当result没有被 ApiResponce<object>.Success嵌套时
             return Ok(ApiResponce<object>.Success(result));
         }
 
