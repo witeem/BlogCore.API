@@ -78,8 +78,7 @@ namespace BlogCore.Domain.DomainServices.Advertisement
             var tokenDescriptor = SetTokenDescriptor(userInfo, authTime, expiresAt, claims); // token 描述
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
-            await _redisManager.SetAsync<AdverUserInfo>(userInfo.Phone + userInfo.Password, userInfo); // 用户登录状态存储
-            await _redisManager.ExpireAsync(userInfo.Phone + userInfo.Password, TimeSpan.FromHours(2)); 
+            await _redisManager.SetAsync<AdverUserInfo>(userInfo.Phone + userInfo.Password, userInfo, TimeSpan.FromDays(1)); // 用户登录状态存储
             return tokenString;
         }
 

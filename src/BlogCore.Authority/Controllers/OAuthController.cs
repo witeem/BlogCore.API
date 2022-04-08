@@ -46,9 +46,6 @@ namespace BlogCore.Authority.Controllers
                 if (user == null) return Unauthorized();
                 #region 生成token令牌
                 var tokenString = await _userInfoAppService.GetJwtToken(user.Data);
-
-                // 把token写入cookie
-                Response.Cookies.Append($"sso-token", tokenString.Data, new Microsoft.AspNetCore.Http.CookieOptions { Domain = ".witeemv.cn", Path="/" });
                 #endregion
 
                 return Ok(ApiResponce<object>.Success(new
@@ -60,7 +57,7 @@ namespace BlogCore.Authority.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(ApiResponce<object>.Fail((int)ApiResponceEnum.Error, "请求失败"));
+                return Ok(ApiResponce<object>.Fail((int)ApiResponceEnum.Error, $"请求失败, {ex.Message}"));
             }
         }
 
@@ -98,7 +95,6 @@ namespace BlogCore.Authority.Controllers
         [HttpGet("GetAuthenticate")]
         public async Task<IActionResult> GetAuthenticate(CancellationToken cancellationToken)
         {
-            var user = CurrentUser;
             return Ok(await _userInfoAppService.GetAuthenticate());
         }
 
