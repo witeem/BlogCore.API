@@ -21,15 +21,18 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: CmdLine@2
-      inputs:
-        script: cp $(Build.SourcesDirectory)/src/BlogCore.Authority/Dockerfile $(Build.SourcesDirectory)/
+    #- task: CmdLine@2
+    #  inputs:
+    #    script: cp $(Build.SourcesDirectory)/src/BlogCore.Authority/Dockerfile $(Build.SourcesDirectory)/
+        
     - task: Docker@2
-      displayName: Build an image
       inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        containerRegistry: 'mydocker'
+        repository: 'witeem/blogcoreauthority'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
         tags: latest
+
     - task: SSH@0
       inputs:
         sshEndpoint: 'myssh'
