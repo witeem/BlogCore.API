@@ -21,9 +21,9 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    #- task: CmdLine@2
-    #  inputs:
-    #    script: cp $(Build.SourcesDirectory)/src/BlogCore.Authority/Dockerfile $(Build.SourcesDirectory)/
+    - task: CmdLine@2
+      inputs:
+        script: cp $(Build.SourcesDirectory)/src/BlogCore.Authority/Dockerfile $(Build.SourcesDirectory)/
         
     - task: Docker@2
       inputs:
