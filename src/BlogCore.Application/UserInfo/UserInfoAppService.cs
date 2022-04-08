@@ -79,7 +79,8 @@ namespace BlogCore.Application.UserInfo
             var currentUser = NullDySession.Instance.CurrentUser;
             if (currentUser != null)
             {
-                return ApiResponce<AdverUserInfo>.Success(currentUser);
+                var userInfo = await _redisManager.GetAsync<AdverUserInfo>(currentUser.Phone + currentUser.Password);
+                return ApiResponce<AdverUserInfo>.Success(userInfo);
             }
 
             return ApiResponce<AdverUserInfo>.Fail((int)ApiResponceEnum.UnAuthorization, "授权失败");
