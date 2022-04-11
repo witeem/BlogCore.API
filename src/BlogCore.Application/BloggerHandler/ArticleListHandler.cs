@@ -7,34 +7,29 @@ using BlogCore.Application.UserInfo;
 using BlogCore.Application.UserInfo.Dtos;
 using BlogCore.Domain.Comm.Dto;
 using MediatR;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using witeem.CoreHelper.ExtensionTools.CommonTools;
 
 namespace BlogCore.Application.BloggerHandler
 {
-    public class BloggerHandler : BaseHandler, IRequestHandler<BloggerInfoModel, BloggerInfoDto>
+    public class ArticleListHandler : BaseHandler, IRequestHandler<RequestModel<List<BloggerArticleDto>>, List<BloggerArticleDto>>
     {
         private readonly IMapper _mapper;
         private readonly IBloggerAppservice _bloggerAppservice;
 
-
-        public BloggerHandler(IMapper mapper, IBloggerAppservice bloggerAppservice)
+        public ArticleListHandler(IMapper mapper, IBloggerAppservice bloggerAppservice)
         {
             _mapper = mapper;
             _bloggerAppservice = bloggerAppservice;
         }
 
-        public async Task<BloggerInfoDto> Handle(BloggerInfoModel request, CancellationToken cancellationToken)
+        public async Task<List<BloggerArticleDto>> Handle(RequestModel<List<BloggerArticleDto>> request, CancellationToken cancellationToken)
         {
             switch (request.Type)
             {
                 case Enums.RequestTypeEnum.GetBloggerInfo:
-                    return (await _bloggerAppservice.GetBloggerInfoAsync()).Data;
+                    return (await _bloggerAppservice.GetBloggerArticlesAsync()).Data;
                 case Enums.RequestTypeEnum.EditBloggerInfo:
                     return null;
                 default:

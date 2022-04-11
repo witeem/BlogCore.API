@@ -1,10 +1,12 @@
 ﻿using BlogCore.Application.AdverUserHandler.Model;
 using BlogCore.Application.BloggerHandler.Model;
+using BlogCore.Application.UserInfo.Dtos;
 using BlogCore.Domain.Comm.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,6 +50,32 @@ namespace BlogCore.Controllers
         {
             var result = await _mediator.Send(req);
             return Ok(ApiResponce<object>.Success(result));  
+        }
+
+        /// <summary>
+        /// 获取博客文章列表
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="cancellationToken"></param>
+        [AllowAnonymous]
+        [HttpGet("GetBloggerArticles")]
+        public async Task<IActionResult> GetBloggerArticlesAsync([FromQuery] RequestModel<List<BloggerArticleDto>> req, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(req);
+            return Ok(ApiResponce<object>.Success(result));
+        }
+
+        /// <summary>
+        /// 获取博客文章详情
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="cancellationToken"></param>
+        [AllowAnonymous]
+        [HttpGet("GetArticleDetails")]
+        public async Task<IActionResult> GetArticleDetailsAsync([FromQuery] RequestModel<BloggerArticleDto> req, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(req);
+            return Ok(ApiResponce<object>.Success(result));
         }
     }
 }

@@ -13,28 +13,27 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using witeem.CoreHelper.ExtensionTools.CommonTools;
 
 namespace BlogCore.Application.BloggerHandler
 {
-    public class BloggerHandler : BaseHandler, IRequestHandler<BloggerInfoModel, BloggerInfoDto>
+    public class ArticleHandler : BaseHandler, IRequestHandler<RequestModel<BloggerArticleDto>, BloggerArticleDto>
     {
         private readonly IMapper _mapper;
         private readonly IBloggerAppservice _bloggerAppservice;
 
 
-        public BloggerHandler(IMapper mapper, IBloggerAppservice bloggerAppservice)
+        public ArticleHandler(IMapper mapper, IBloggerAppservice bloggerAppservice)
         {
             _mapper = mapper;
             _bloggerAppservice = bloggerAppservice;
         }
 
-        public async Task<BloggerInfoDto> Handle(BloggerInfoModel request, CancellationToken cancellationToken)
+        public async Task<BloggerArticleDto> Handle(RequestModel<BloggerArticleDto> request, CancellationToken cancellationToken)
         {
             switch (request.Type)
             {
                 case Enums.RequestTypeEnum.GetBloggerInfo:
-                    return (await _bloggerAppservice.GetBloggerInfoAsync()).Data;
+                    return (await _bloggerAppservice.GetBloggerArticleAsync(request.Id)).Data;
                 case Enums.RequestTypeEnum.EditBloggerInfo:
                     return null;
                 default:

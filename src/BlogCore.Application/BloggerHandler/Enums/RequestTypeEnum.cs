@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BlogCore.Application.BloggerHandler.Enums
 {
-    public enum BloggerTypeEnum
+    public enum RequestTypeEnum
     {
         GetBloggerInfo = 1,
 

@@ -537,12 +537,26 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <param name="orderFileds"></param>
     /// <param name="orderByType"></param>
     /// <returns>实体列表</returns>
-    public async Task<List<TEntity>> QueryListAsync(Expression<Func<TEntity, bool>> whereLambda = null,
+    public ISugarQueryable<TEntity> QueryableAsync(Expression<Func<TEntity, bool>> whereLambda,
         Expression<Func<TEntity, object>> orderFileds = null, OrderByType orderByType = OrderByType.Desc)
     {
-        return await _db.Queryable<TEntity>().WhereIF(whereLambda != null, whereLambda)
-            .OrderByIF(orderFileds != null, orderFileds, orderByType)
-            .ToListAsync();
+        return _db.Queryable<TEntity>().WhereIF(whereLambda != null, whereLambda)
+            .OrderByIF(orderFileds != null, orderFileds, orderByType);
+    }
+
+    /// <summary>
+    /// 实体列表
+    /// </summary>
+    /// <param name="whereLambda">条件表达式</param>
+    /// <param name="orderFileds"></param>
+    /// <param name="orderByType"></param>
+    /// <returns>实体列表</returns>
+    public async Task<List<TEntity>> QueryListAsync(Expression<Func<TEntity, bool>> whereLambda,
+        Expression<Func<TEntity, object>> orderFileds = null, OrderByType orderByType = OrderByType.Desc)
+    {
+        var query = _db.Queryable<TEntity>().WhereIF(whereLambda != null, whereLambda)
+            .OrderByIF(orderFileds != null, orderFileds, orderByType);
+        return await query.ToListAsync();
     }
 
     /// <summary>

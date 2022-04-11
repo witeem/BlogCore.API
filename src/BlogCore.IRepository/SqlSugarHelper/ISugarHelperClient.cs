@@ -242,10 +242,20 @@ public interface ISugarHelperClient<TEntity> : IRepositoryCore where TEntity : c
     /// 实体列表
     /// </summary>
     /// <param name="whereLambda">条件表达式</param>
-    /// <param name="orderFileds"></param>
-    /// <param name="orderByType"></param>
-    /// <returns>实体列表</returns>
-    Task<List<TEntity>> QueryListAsync(Expression<Func<TEntity, bool>> whereLambda = null,
+    /// <param name="orderFileds">排序字段</param>
+    /// <param name="orderByType">排序方式</param>
+    /// <returns>ISugarQueryable<TEntity></returns>
+    ISugarQueryable<TEntity> QueryableAsync(Expression<Func<TEntity, bool>> whereLambda,
+        Expression<Func<TEntity, object>> orderFileds = null, OrderByType orderByType = OrderByType.Desc);
+
+    /// <summary>
+    /// 实体列表
+    /// </summary>
+    /// <param name="whereLambda">条件表达式</param>
+    /// <param name="orderFileds">排序字段</param>
+    /// <param name="orderByType">排序方式</param>
+    /// <returns></returns>
+    Task<List<TEntity>> QueryListAsync(Expression<Func<TEntity, bool>> whereLambda,
         Expression<Func<TEntity, object>> orderFileds = null, OrderByType orderByType = OrderByType.Desc);
 
 
