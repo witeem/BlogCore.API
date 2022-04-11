@@ -25,10 +25,11 @@ stages:
       inputs:
         script: cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/
     - task: Docker@2
-      displayName: Build an image
       inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        containerRegistry: 'mydocker'
+        repository: 'witeem/blogcore'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
         tags: latest
     - task: SSH@0
       inputs:
