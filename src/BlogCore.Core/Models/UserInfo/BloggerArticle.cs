@@ -20,5 +20,11 @@ namespace BlogCore.Core.UserInfo
         public string Introduction { get; set; }
 
         public string Article { get; set; }
+
+        public string Label { get; set; }
+
+        public int Views { get; set; }
+
+        public int Likes { get; set; }
     }
 }

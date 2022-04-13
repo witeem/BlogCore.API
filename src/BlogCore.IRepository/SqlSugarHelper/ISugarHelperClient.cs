@@ -91,19 +91,19 @@ public interface ISugarHelperClient<TEntity> : IRepositoryCore where TEntity : c
     /// <param name="lstIgnoreColumns">忽略列</param>
     /// <param name="isLock">是否加锁</param>
     /// <returns>受影响行数</returns>
-    Task<int> UpdateAsync(TEntity entity, Expression<Func<TEntity, bool>> where,
-        List<string> lstIgnoreColumns = null,
-        bool isLock = true);
+    Task<int> UpdateIgnoreColumnsAsync(TEntity entity, Expression<Func<TEntity, bool>> where,
+         Expression<Func<TEntity, object>> lstIgnoreColumns = null, bool isLock = true);
 
     /// <summary>
     /// 更新实体
     /// </summary>
-    /// <param name="update">实体对象</param>
+    /// <param name="entity">实体对象</param>
     /// <param name="where">条件表达式</param>
+    /// <param name="columns">更新列</param>
     /// <param name="isLock">是否加锁</param>
     /// <returns>受影响行数</returns>
-    Task<int> UpdateAsync(Expression<Func<TEntity, TEntity>> update, Expression<Func<TEntity, bool>> where = null,
-        bool isLock = true);
+    Task<int> UpdateAsync(TEntity entity, Expression<Func<TEntity, bool>> where,
+        Expression<Func<TEntity, object>> columns, bool isLock = true);
 
     /// <summary>
     /// 更新实体列
@@ -115,16 +115,6 @@ public interface ISugarHelperClient<TEntity> : IRepositoryCore where TEntity : c
     /// <returns>受影响行数</returns>
     Task<int> UpdateColumnsAsync(TEntity entity, Expression<Func<TEntity, object>> updateColumns,
         Expression<Func<TEntity, object>> wherecolumns = null, bool isLock = true);
-
-    /// <summary>
-    /// 更新实体
-    /// </summary>
-    /// <param name="keyValues">键:字段名称 值：值</param>
-    /// <param name="where">条件表达式</param>
-    /// <param name="isLock">是否加锁</param>
-    /// <returns>受影响行数</returns>
-    Task<int> UpdateAsync(Dictionary<string, object> keyValues, Expression<Func<TEntity, bool>> where = null,
-        bool isLock = true);
 
     /// <summary>
     /// 批量更新实体列

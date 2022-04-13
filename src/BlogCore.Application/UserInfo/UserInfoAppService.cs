@@ -30,21 +30,19 @@ namespace BlogCore.Application.UserInfo
         private readonly IMapper _mapper;
         private readonly IUserInfoRepository _userInfoRepository;
         private readonly IAdverUserInfoDomainServices _userInfoDomainServices;
-        private readonly IHttpClient _httpClient;
         private readonly IRedisManager _redisManager;
         private readonly IRoleMenusRepository _roleMenusRepository;
         private readonly IMenusInfoRepository _menusInfoRepository;
 
         public UserInfoAppService(ILogger<UserInfoAppService> logger, IOptionsMonitor<JwtSettings> jwtSettings,
             IMapper mapper, IUserInfoRepository userInfoRepository, IAdverUserInfoDomainServices adverUserInfoDomainServices,
-            IHttpClient httpClient, IRedisManager redisManager, IRoleMenusRepository roleMenusRepository, IMenusInfoRepository menusInfoRepository)
+            IRedisManager redisManager, IRoleMenusRepository roleMenusRepository, IMenusInfoRepository menusInfoRepository)
         {
             _logger = logger;
             _jwtSettings = jwtSettings.CurrentValue;
             _mapper = mapper;
             _userInfoRepository = userInfoRepository;
             _userInfoDomainServices = adverUserInfoDomainServices;
-            _httpClient = httpClient;
             _redisManager = redisManager;
             _roleMenusRepository = roleMenusRepository;
             _menusInfoRepository = menusInfoRepository;

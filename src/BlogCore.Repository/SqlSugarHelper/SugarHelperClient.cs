@@ -161,13 +161,13 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <param name="lstIgnoreColumns">忽略列</param>
     /// <param name="isLock">是否加锁</param>
     /// <returns>受影响行数</returns>
-    public async Task<int> UpdateAsync(TEntity entity, Expression<Func<TEntity, bool>> where,
-        List<string> lstIgnoreColumns = null, bool isLock = true)
+    public async Task<int> UpdateIgnoreColumnsAsync(TEntity entity, Expression<Func<TEntity, bool>> where,
+        Expression<Func<TEntity, object>> lstIgnoreColumns = null, bool isLock = true)
     {
         IUpdateable<TEntity> up = _db.Updateable(entity);
-        if (lstIgnoreColumns != null && lstIgnoreColumns.Count > 0)
+        if (lstIgnoreColumns != null)
         {
-            up = up.IgnoreColumns(lstIgnoreColumns.ToArray());
+            up = up.IgnoreColumns(lstIgnoreColumns);
         }
 
         up = up.Where(where);
@@ -183,47 +183,24 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <summary>
     /// 更新实体
     /// </summary>
-    /// <param name="update">实体对象</param>
+    /// <param name="entity">实体对象</param>
     /// <param name="where">条件表达式</param>
+    /// <param name="columns">更新列</param>
     /// <param name="isLock">是否加锁</param>
     /// <returns>受影响行数</returns>
-    public async Task<int> UpdateAsync(Expression<Func<TEntity, TEntity>> update,
-        Expression<Func<TEntity, bool>> where = null, bool isLock = true)
+    public async Task<int> UpdateAsync(TEntity entity, Expression<Func<TEntity, bool>> where,
+        Expression<Func<TEntity, object>> columns, bool isLock = true)
     {
-        IUpdateable<TEntity> up = _db.Updateable<TEntity>().SetColumns(update);
-        if (where != null)
-        {
-            up = up.Where(where);
-        }
-
+        IUpdateable<TEntity> up = _db.Updateable(entity);
+        up = up.Where(where);
         if (isLock)
         {
             up = up.With(SqlWith.UpdLock);
         }
 
-        var result = await up.ExecuteCommandAsync();
-        return result;
-    }
-
-    /// <summary>
-    /// 更新实体
-    /// </summary>
-    /// <param name="keyValues">键:字段名称 值：值</param>
-    /// <param name="where">条件表达式</param>
-    /// <param name="isLock">是否加锁</param>
-    /// <returns>受影响行数</returns>
-    public async Task<int> UpdateAsync(Dictionary<string, object> keyValues,
-        Expression<Func<TEntity, bool>> where = null, bool isLock = true)
-    {
-        IUpdateable<TEntity> up = _db.Updateable<TEntity>(keyValues);
-        if (where != null)
+        if (columns != null)
         {
-            up = up.Where(where);
-        }
-
-        if (isLock)
-        {
-            up = up.With(SqlWith.UpdLock);
+            up.UpdateColumns(columns);
         }
 
         var result = await up.ExecuteCommandAsync();

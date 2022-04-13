@@ -20,5 +20,11 @@ namespace BlogCore.Application.UserInfo.Dtos
         public string Introduction { get; set; }
 
         public string Article { get; set; }
+
+        public string Label { get; set; }
+
+        public int Views { get; set; }
+
+        public int Likes { get; set; }
     }
 }

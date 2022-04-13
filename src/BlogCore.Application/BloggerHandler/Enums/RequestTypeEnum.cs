@@ -13,6 +13,6 @@ namespace BlogCore.Application.BloggerHandler.Enums
     {
         GetBloggerInfo = 1,
 
-        EditBloggerInfo = 2
+        EditBloggerInfo = 2,
     }
 }

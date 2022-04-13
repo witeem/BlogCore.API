@@ -12,5 +12,7 @@ namespace BlogCore.Application.BloggerHandler.Model
         public RequestTypeEnum Type { get; set; }
 
         public long Id { get; set; }
+
+        public string Ip { get; set; }
     }
 }
