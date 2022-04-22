@@ -26,12 +26,16 @@ stages:
       inputs:
         script: |
           cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/
-          echo ready to execute command
-          ls
-          sed -i 's/{ConnectionString}/$(ConnectionString)/g' $(appsettings)
-          sed -i 's/{ConnKey}/$(ConnKey)/g' $(appsettings)
-          sed -i 's/{ConnIV}/$(ConnIV)/g' $(appsettings)
-          
+        
+    - script: |
+        echo ready to execute command
+        ls
+        sed -i 's/{ConnectionString}/$(ConnectionString)/g' $(appsettings)
+        sed -i 's/{ConnKey}/$(ConnKey)/g' $(appsettings)
+        sed -i 's/{ConnIV}/$(ConnIV)/g' $(appsettings)
+        echo "================= print file $(appsettings) start ===================="
+        echo command executed
+
     - task: Docker@2
       inputs:
         containerRegistry: 'mydocker'
