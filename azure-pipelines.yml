@@ -25,7 +25,8 @@ stages:
     - script: |
         echo "ready to execute command"
         ls
-        echo $(appsettings)
+        ls src/
+        ls src/BlogCore
         sed -i 's/{ConnectionString}/$(ConnectionString)/g' $(appsettings)
         sed -i 's/{ConnKey}/$(ConnKey)/g' $(appsettings)
         sed -i 's/{ConnIV}/$(ConnIV)/g' $(appsettings)
