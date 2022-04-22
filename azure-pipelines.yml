@@ -11,7 +11,7 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
-  appsettings: appsettings.Production.json
+  appsettings: '**/appsettings.Production.json'
 
 stages:
 - stage: Build
@@ -22,10 +22,9 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - bash: |
+    - script: |
         echo "ready to execute command"
         cd src/BlogCore/
-        ls
         sed -i 's/{ConnectionString}/$(ConnectionString)/g' $(appsettings)
         sed -i 's/{ConnKey}/$(ConnKey)/g' $(appsettings)
         sed -i 's/{ConnIV}/$(ConnIV)/g' $(appsettings)
