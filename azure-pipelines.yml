@@ -24,8 +24,8 @@ stages:
     steps:
     - script: |
         echo "ready to execute command"
-        ll src/BlogCore/ 
         chmod 666 $(appsettings)
+        ls src/BlogCore/ -l
         sed -i 's/{ConnectionString}/1010101010/g' $(appsettings)
         sed -i 's/{ConnKey}/1010101010/g' $(appsettings)
         sed -i 's/{ConnIV}/1010101010/g' $(appsettings)
