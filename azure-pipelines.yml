@@ -22,7 +22,7 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - script: |
+    - bash: |
         echo "ready to execute command"
         cd src/BlogCore/
         ls
