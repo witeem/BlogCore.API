@@ -32,7 +32,6 @@ stages:
           sed -i 's/{ConnKey}/$(ConnKey)/g' $(appsettings)
           sed -i 's/{ConnIV}/$(ConnIV)/g' $(appsettings)
           
-
     - task: Docker@2
       inputs:
         containerRegistry: 'mydocker'
