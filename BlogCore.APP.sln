@@ -26,6 +26,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogCore.IRepository", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogCore.Repository", "src\BlogCore.Repository\BlogCore.Repository.csproj", "{40C18938-73F5-490E-BA6A-4BF5636CA1CD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DD78CB28-101F-4E17-8D34-400C4D35818B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiteemTest", "WiteemTest\WiteemTest.csproj", "{19B6AD46-3123-4695-AF90-9EEF06AB4DAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +68,10 @@ Global
 		{40C18938-73F5-490E-BA6A-4BF5636CA1CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40C18938-73F5-490E-BA6A-4BF5636CA1CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40C18938-73F5-490E-BA6A-4BF5636CA1CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19B6AD46-3123-4695-AF90-9EEF06AB4DAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19B6AD46-3123-4695-AF90-9EEF06AB4DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19B6AD46-3123-4695-AF90-9EEF06AB4DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19B6AD46-3123-4695-AF90-9EEF06AB4DAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +80,7 @@ Global
 		{D6CCF0DA-D0AA-4AF9-B7B0-552CA3495A64} = {6D94DDA8-59CC-4074-9ACA-8C86845DA0FA}
 		{6F59BDF7-EA95-4986-B17E-BEA0EBF927E3} = {6D94DDA8-59CC-4074-9ACA-8C86845DA0FA}
 		{3B217F68-5DA4-4B64-9D32-11D0C01EE277} = {6D94DDA8-59CC-4074-9ACA-8C86845DA0FA}
+		{19B6AD46-3123-4695-AF90-9EEF06AB4DAE} = {DD78CB28-101F-4E17-8D34-400C4D35818B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {55F246F4-9A4D-47C8-811E-45377BEE5143}

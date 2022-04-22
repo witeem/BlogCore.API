@@ -13,7 +13,7 @@ using witeem.CoreHelper.ExtensionTools.CommonTools;
 namespace BlogCore.Authority.Controllers
 {
     /// <summary>
-    /// 
+    /// SSO 授权
     /// </summary>
     public class OAuthController : BlogControllerBase
     {
@@ -21,7 +21,7 @@ namespace BlogCore.Authority.Controllers
         private readonly ISignInfoAppService _signInfoAppService;
 
         /// <summary>
-        /// 
+        /// SSO 授权
         /// </summary>
         /// <param name="userInfoAppService"></param>
         /// <param name="signInfoAppService"></param>
@@ -77,6 +77,17 @@ namespace BlogCore.Authority.Controllers
         }
 
         /// <summary>
+        /// 获取当前用户 (登录状态检测)
+        /// </summary>
+        /// <param name="cancellationToken">cancellationToken</param>
+        /// <returns></returns>
+        [HttpGet("GetAuthenticate")]
+        public async Task<IActionResult> GetAuthenticate(CancellationToken cancellationToken)
+        {
+            return Ok(await _userInfoAppService.GetAuthenticate());
+        }
+
+        /// <summary>
         /// 新增用户信息
         /// </summary>
         /// <param name="req">req</param>
@@ -85,17 +96,6 @@ namespace BlogCore.Authority.Controllers
         public async Task<IActionResult> AddUserInfoAsync([FromBody] AdverUserInfoDto req, CancellationToken cancellationToken)
         {
             return Ok(await _userInfoAppService.AddUserInfoAsync(req));
-        }
-
-        /// <summary>
-        /// 获取当前用户 (检测是否登录)
-        /// </summary>
-        /// <param name="cancellationToken">cancellationToken</param>
-        /// <returns></returns>
-        [HttpGet("GetAuthenticate")]
-        public async Task<IActionResult> GetAuthenticate(CancellationToken cancellationToken)
-        {
-            return Ok(await _userInfoAppService.GetAuthenticate());
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace BlogCore.Authority.Controllers
         /// <param name="str"></param>
         /// <param name="key"></param>
         /// <param name="iv"></param>
-        /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet(nameof(AESEncrypt))]
         public async Task<IActionResult> AESEncrypt(string str, string key, string iv) => Ok(await _userInfoAppService.AESEncrypt(str, key, iv));
 
@@ -157,7 +157,7 @@ namespace BlogCore.Authority.Controllers
         /// <param name="str"></param>
         /// <param name="key"></param>
         /// <param name="iv"></param>
-        /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet(nameof(AESDecrypt))]
         public async Task<IActionResult> AESDecrypt(string str, string key, string iv) => Ok(await _userInfoAppService.AESDecrypt(str, key, iv));
 
@@ -167,7 +167,7 @@ namespace BlogCore.Authority.Controllers
         /// <param name="str"></param>
         /// <param name="key"></param>
         /// <param name="iv"></param>
-        /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet(nameof(DESEncrypt))]
         public async Task<IActionResult> DESEncrypt(string str, string key, string iv) => Ok(await _userInfoAppService.DESEncrypt(str, key, iv));
 
@@ -177,7 +177,7 @@ namespace BlogCore.Authority.Controllers
         /// <param name="str"></param>
         /// <param name="key"></param>
         /// <param name="iv"></param>
-        /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet(nameof(DESDecrypt))]
         public async Task<IActionResult> DESDecrypt(string str, string key, string iv) => Ok(await _userInfoAppService.DESDecrypt(str, key, iv));
     }
