@@ -11,7 +11,7 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
-  appsettings: '**/appsettings.Production.json'
+  appsettings: 'appsettings.Production.json'
 
 stages:
 - stage: Build
