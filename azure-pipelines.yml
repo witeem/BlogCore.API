@@ -11,7 +11,7 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
-  appsettings: 'appsettings.Production.json'
+  appsettings: src/BlogCore/appsettings.Production.json
 
 stages:
 - stage: Build
@@ -24,8 +24,7 @@ stages:
     steps:
     - script: |
         echo "ready to execute command"
-        cd src/BlogCore/
-        ls -l
+        ls rc/BlogCore/ -l
         sed -i 's/{ConnectionString}/1010101010/g' $(appsettings)
         sed -i 's/{ConnKey}/1010101010/g' $(appsettings)
         sed -i 's/{ConnIV}/1010101010/g' $(appsettings)
