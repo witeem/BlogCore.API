@@ -22,19 +22,20 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: CmdLine@2
-      inputs:
-        script: |
-          cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/
-        
     - script: |
-        echo ready to execute command
+        echo "ready to execute command"
         ls
+        echo $(appsettings)
         sed -i 's/{ConnectionString}/$(ConnectionString)/g' $(appsettings)
         sed -i 's/{ConnKey}/$(ConnKey)/g' $(appsettings)
         sed -i 's/{ConnIV}/$(ConnIV)/g' $(appsettings)
         echo "================= print file $(appsettings) start ===================="
-        echo command executed
+        echo "command executed"
+
+    - task: CmdLine@2
+      inputs:
+        script: |
+          cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/
 
     - task: Docker@2
       inputs:
