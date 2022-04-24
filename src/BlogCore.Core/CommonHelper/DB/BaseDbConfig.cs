@@ -32,18 +32,19 @@ namespace BlogCore.Core.CommonHelper.DB
                 {
                     if (item.Enabled)
                     {
-                        AESEncryptOut encryptOut = new AESEncryptOut()
-                        {
-                            Content = item.ConnectionString,
-                            Key = appSetting.ConnKey,
-                            Iv = appSetting.ConnIV
-                        };
-                        string connStr = EncyptHelper.AESDecrypt(encryptOut.Content, encryptOut.Key, encryptOut.Iv);
+                        //AESEncryptOut encryptOut = new AESEncryptOut()
+                        //{
+                        //    Content = item.ConnectionString,
+                        //    Key = appSetting.ConnKey,
+                        //    Iv = appSetting.ConnIV
+                        //};
+                        //string connStr = EncyptHelper.AESDecrypt(encryptOut.Content, encryptOut.Key, encryptOut.Iv);
+
                         allDbs.Add(new DataBaseOperate
                         {
                             ConnId =item.ConnId,
                             HitRate = item.HitRate,
-                            ConnectionString = connStr,
+                            ConnectionString = item.ConnectionString,
                             DbType = (DbType)item.DBType
                         });
                     }
