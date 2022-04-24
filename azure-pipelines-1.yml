@@ -11,6 +11,7 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+  appsettings: src/BlogCore.Authority/appsettings.Production.json
 
 stages:
 - stage: Build
