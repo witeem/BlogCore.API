@@ -28,7 +28,7 @@ stages:
           cp $(Build.SourcesDirectory)/src/BlogCore.Authority/Dockerfile $(Build.SourcesDirectory)/
           ls $(appsettings) -l
           chmod 666 $(appsettings)
-          sed  -i  's/{ConnectionString}/nsnsns/NNMD/123ss/g'  $(appsettings)
+          sed  -i  's/{ConnectionString}/nsnsns/NNMD/123+ss==/g'  $(appsettings)
           sed  -i  's/{ConnKey}/$(ConnKey)/g'  $(appsettings)
           sed  -i  's/{ConnIV}/$(ConnIV)/g'  $(appsettings)
           echo "================= print file $(appsettings) start ===================="
