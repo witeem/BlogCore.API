@@ -11,7 +11,7 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
-  appsettings: /src/BlogCore/appsettings.Production.json
+  appsettings: src/BlogCore/appsettings.Production.json
 
 stages:
 - stage: Build
@@ -28,13 +28,13 @@ stages:
           cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/
           ls $(appsettings) -l
           chmod 666 $(appsettings)
-          sed -i 's/{ConnectionString}/1010101010/g'  $(appsettings)
-          sed -i 's/{ConnKey}/1010101010/g'  $(appsettings)
-          sed -i 's/{ConnIV}/1010101010/g'  $(appsettings)
+          sed  -i  's/{ConnectionString}/1010101010/g'  $(appsettings)
+          sed  -i  's/{ConnKey}/1010101010/g'  $(appsettings)
+          sed  -i  's/{ConnIV}/1010101010/g'  $(appsettings)
           echo "================= print file $(appsettings) start ===================="
           cat $(appsettings) | while read line; do echo $line; done
           echo "================= print file $(appsettings) end ===================="
-          echo "command executed"
+          echo "command executed"
 
     - task: Docker@2
       inputs:
