@@ -11,7 +11,7 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
-  appsettings: 'appsettings.Production.json'
+  appsettings: src/BlogCore/appsettings.Production.json
 
 stages:
 - stage: Build
@@ -23,21 +23,19 @@ stages:
       vmImage: ubuntu-latest
     steps:
     - script: |
-        echo "ready to execute command"
-        cd src/BlogCore/
-        sed -i 's/{ConnectionString}/$(ConnectionString)/g' $(appsettings)
-        sed -i 's/{ConnKey}/$(ConnKey)/g' $(appsettings)
-        sed -i 's/{ConnIV}/$(ConnIV)/g' $(appsettings)
+        ls $(appsettings) -l
+        chmod 666 $(appsettings)
+        sed  -i  's/{ConnectionString}/$(ConnectionString)/g'  $(appsettings)
+        sed  -i  's/{ConnKey}/$(ConnKey)/g'  $(appsettings)
+        sed  -i  's/{ConnIV}/$(ConnIV)/g'  $(appsettings)
         echo "================= print file $(appsettings) start ===================="
         cat $(appsettings) | while read line; do echo $line; done
         echo "================= print file $(appsettings) end ===================="
-        echo "command executed"
-
+        echo "command executed"
     - task: CmdLine@2
       inputs:
         script: |
           cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/
-
     - task: Docker@2
       inputs:
         containerRegistry: 'mydocker'

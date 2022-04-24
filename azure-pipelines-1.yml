@@ -11,6 +11,7 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+  appsettings: src/BlogCore.Authority/appsettings.Production.json
 
 stages:
 - stage: Build
@@ -23,8 +24,17 @@ stages:
     steps:
     - task: CmdLine@2
       inputs:
-        script: cp $(Build.SourcesDirectory)/src/BlogCore.Authority/Dockerfile $(Build.SourcesDirectory)/
-        
+        script: |
+          cp $(Build.SourcesDirectory)/src/BlogCore.Authority/Dockerfile $(Build.SourcesDirectory)/
+          ls $(appsettings) -l
+          chmod 666 $(appsettings)
+          sed  -i  's/{ConnectionString}/nsnsns/NNMD/123+ss==/g'  $(appsettings)
+          sed  -i  's/{ConnKey}/$(ConnKey)/g'  $(appsettings)
+          sed  -i  's/{ConnIV}/$(ConnIV)/g'  $(appsettings)
+          echo "================= print file $(appsettings) start ===================="
+          cat $(appsettings) | while read line; do echo $line; done
+          echo "================= print file $(appsettings) end ===================="
+          echo "command executed"
     - task: Docker@2
       inputs:
         containerRegistry: 'mydocker'
