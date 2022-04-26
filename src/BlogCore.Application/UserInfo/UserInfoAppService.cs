@@ -167,9 +167,9 @@ namespace BlogCore.Application.UserInfo
                 _input.Password = EncyptHelper.DESEncrypt(input.Password);
                 _input.Phone = EncyptHelper.DESEncrypt(input.Phone);
                 _input.CreateTime = DateTime.Now;
-                _input.Creator = currentUser.Name;
+                _input.Creator = currentUser?.Name ?? input.Name;
                 _input.LastModiftTime = DateTime.Now;
-                _input.LastModiftUser = currentUser.Name;
+                _input.LastModiftUser = currentUser?.Name ?? input.Name;
                 var userInfo = await _userInfoDomainServices.AddUserInfo(_input);
                 return ApiResponce<AdverUserInfoDto>.Success(_mapper.Map<AdverUserInfoDto>(userInfo));
             }

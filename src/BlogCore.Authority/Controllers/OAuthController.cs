@@ -92,6 +92,7 @@ namespace BlogCore.Authority.Controllers
         /// </summary>
         /// <param name="req">req</param>
         /// <param name="cancellationToken">cancellationToken</param>
+        [AllowAnonymous]
         [HttpPost("AddUserInfo")]
         public async Task<IActionResult> AddUserInfoAsync([FromBody] AdverUserInfoDto req, CancellationToken cancellationToken)
         {
