@@ -21,8 +21,11 @@ namespace BlogCore.Core.Models
             {
                 SqlSugarClient sqlSugarClient = new SqlSugarClient(new ConnectionConfig
                 {
-                    DbType = DbType.MySql,
-                    ConnectionString = "Server=127.0.0.1;port=3306;database=localhostDB;uid=user;password=localhost;Convert Zero Datetime=True;Allow User Variables=True;pooling=true",
+                    // DbType = DbType.MySql,
+                    // ConnectionString = "Server=127.0.0.1;port=3306;database=localhostDB;uid=user;password=localhost;Convert Zero Datetime=True;Allow User Variables=True;pooling=true",
+
+                    // DbType = DbType.PostgreSQL,
+                    // ConnectionString = "PORT=5432;DATABASE=localhostDB;HOST=127.0.0.1;PASSWORD=localhost;USER ID=user",
                     IsAutoCloseConnection = true
                 });
 

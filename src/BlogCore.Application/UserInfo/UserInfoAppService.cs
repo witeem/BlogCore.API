@@ -27,6 +27,7 @@ namespace BlogCore.Application.UserInfo
     {
         private readonly ILogger<UserInfoAppService> _logger;
         private readonly JwtSettings _jwtSettings;
+        private readonly AppSetting _appSetting;
         private readonly IMapper _mapper;
         private readonly IUserInfoRepository _userInfoRepository;
         private readonly IAdverUserInfoDomainServices _userInfoDomainServices;
@@ -34,12 +35,13 @@ namespace BlogCore.Application.UserInfo
         private readonly IRoleMenusRepository _roleMenusRepository;
         private readonly IMenusInfoRepository _menusInfoRepository;
 
-        public UserInfoAppService(ILogger<UserInfoAppService> logger, IOptionsMonitor<JwtSettings> jwtSettings,
+        public UserInfoAppService(ILogger<UserInfoAppService> logger, IOptionsMonitor<JwtSettings> jwtSettings, IOptionsMonitor<AppSetting> appSetting,
             IMapper mapper, IUserInfoRepository userInfoRepository, IAdverUserInfoDomainServices adverUserInfoDomainServices,
             IRedisManager redisManager, IRoleMenusRepository roleMenusRepository, IMenusInfoRepository menusInfoRepository)
         {
             _logger = logger;
             _jwtSettings = jwtSettings.CurrentValue;
+            _appSetting = appSetting.CurrentValue;
             _mapper = mapper;
             _userInfoRepository = userInfoRepository;
             _userInfoDomainServices = adverUserInfoDomainServices;
@@ -137,7 +139,7 @@ namespace BlogCore.Application.UserInfo
             {
                 input.Password = EncyptHelper.DESEncrypt(input.Password);
                 var userInfo = await _userInfoRepository.QueryFirstAsync(m => m.Name == input.UserName && m.Password == input.Password);
-                await _userInfoDomainServices.SetDesDecrypt(userInfo);
+                _userInfoDomainServices.SetDesDecrypt(userInfo);
                 return ApiResponce<AdverUserInfoDto>.Success(_mapper.Map<AdverUserInfoDto>(userInfo));
             }
             catch

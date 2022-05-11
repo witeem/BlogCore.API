@@ -19,7 +19,7 @@ namespace BlogCore.Domain.DomainServices.Advertisement
         /// </summary>
         /// <param name="userInfo"></param>
         /// <returns></returns>
-        Task SetDesDecrypt(AdverUserInfo userInfo);
+        void SetDesDecrypt(AdverUserInfo userInfo);
 
         /// <summary>
         /// 获取登录用户token

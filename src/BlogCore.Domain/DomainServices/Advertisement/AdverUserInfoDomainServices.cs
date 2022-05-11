@@ -53,15 +53,13 @@ namespace BlogCore.Domain.DomainServices.Advertisement
         /// 部分数据需要解密展示
         /// </summary>
         /// <param name="userInfo"></param>
-        public async Task SetDesDecrypt(AdverUserInfo userInfo)
+        public void SetDesDecrypt(AdverUserInfo userInfo)
         {
             if (userInfo != null)
             {
                 userInfo.Password = EncyptHelper.DESDecrypt(userInfo.Password);
                 userInfo.Phone = EncyptHelper.DESDecrypt(userInfo.Phone);
             }
-
-            await Task.CompletedTask;
         }
 
         /// <summary>
