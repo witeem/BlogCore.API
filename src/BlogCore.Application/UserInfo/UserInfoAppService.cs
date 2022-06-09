@@ -9,16 +9,11 @@ using BlogCore.Domain.DomainServices.Advertisement;
 using BlogCore.Domain.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using SqlSugar;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using witeem.CoreHelper.ExtensionTools.CommonTools;
-using witeem.CoreHelper.HttpHelper;
 using witeem.CoreHelper.Redis;
 
 namespace BlogCore.Application.UserInfo

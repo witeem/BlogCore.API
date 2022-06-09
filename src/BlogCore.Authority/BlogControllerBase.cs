@@ -1,12 +1,9 @@
 ﻿using BlogCore.Core.UserInfo;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
-using System.Threading.Tasks;
 using witeem.CoreHelper.ExtensionTools.CommonTools;
-using witeem.CoreHelper.Redis;
 
 namespace BlogCore.Authority
 {

@@ -15,14 +15,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Consul" Version="1.6.10.5" />
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Serilog" Version="2.11.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
     <PackageReference Include="witeem.CoreHelper" Version="1.1.1" />
 	<PackageReference Include="SqlSugarCore" Version="5.0.5.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="BgWorking\" />
+    <Folder Include="CommonHelper\Logs\" />
   </ItemGroup>
 
 </Project>

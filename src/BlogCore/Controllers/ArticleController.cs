@@ -31,7 +31,7 @@ namespace BlogCore.Controllers
         public async Task<IActionResult> ArticleAddViewsAsync([FromQuery] ArticleAddViewsReq req, CancellationToken cancellationToken)
         {
             var result = await _bloggerAppservice.AddViews(req);
-            return Ok(ApiResponce<object>.Success(result));
+            return Ok(result);
         }
     }
 }

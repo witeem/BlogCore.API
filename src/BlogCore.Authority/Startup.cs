@@ -3,12 +3,16 @@ using Autofac.Extensions.DependencyInjection;
 using BlogCore.Application.Exceptions;
 using BlogCore.Application.MyMiddleware;
 using BlogCore.Core;
+using BlogCore.Core.ComSettings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
+using System;
 using System.Reflection;
 using witeem.CoreHelper.ExtensionTools;
 using witeem.CoreHelper.HttpHelper;
@@ -46,6 +50,16 @@ namespace BlogCore.Authority
         /// <param name="env"></param>
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            Log.Logger = new LoggerConfiguration()
+                      .Enrich.FromLogContext()
+                      .MinimumLevel.Debug()
+                      .WriteTo.Elasticsearch(
+                          new ElasticsearchSinkOptions(new Uri("http://134.175.26.46:9200"))
+                          {
+                              MinimumLogEventLevel = Serilog.Events.LogEventLevel.Verbose,
+                              AutoRegisterTemplate = true
+                          }).CreateLogger();
+
             Configuration = configuration;
             _hostEnvironment = env;
             ConfigManagerHelper.SetConfiguration(Configuration);
@@ -63,6 +77,7 @@ namespace BlogCore.Authority
             services.AddHttpHelperService();
             services.Configure<AppSetting>(Configuration.GetSection(BlogCoreConsts.AppSetting));
             services.Configure<JwtSettings>(Configuration.GetSection(BlogCoreConsts.JwtSettings));
+            services.AddHealthChecks();
 
             // SqlSugar
             services.AddSqlSugarSetup();
@@ -114,7 +129,9 @@ namespace BlogCore.Authority
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        /// <param name="loggerFactory">loggerFactory</param>
+        /// <param name="lifetime">lifetime</param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IHostApplicationLifetime lifetime)
         {
             this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
             if (env.IsDevelopment())
@@ -131,16 +148,25 @@ namespace BlogCore.Authority
                 app.UseExceptionHandler("/Error");
             }
 
+#if !DEBUG
+            // 注册服务发现
+            app.RegisterConsul(lifetime);
+#endif
+
+            loggerFactory.AddSerilog();
             // 跳转https
             app.UseHttpsRedirection();
-            app.UseRouting();
             //启用jwt认证中间件
             app.UseMiddleware<JwtMiddleware>();
             //启用签名认证中间件
             app.UseMiddleware<SignMiddleware>();
             // 返回错误码
             app.UseStatusCodePages();//把错误码返回前台，比如是404
-            app.UseMvc();
+            app.UseRouting();
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/healthz");
+            });
         }
     }
 }

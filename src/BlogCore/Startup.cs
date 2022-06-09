@@ -59,6 +59,7 @@ namespace BlogCore
             services.AddHttpHelperService();
             services.AddMediatR(typeof(Startup));
             services.AddMediatR(typeof(BaseHandler));
+            services.AddHealthChecks();
 
             services.AddSingleton(new LogHelper(_hostEnvironment.ContentRootPath));
             services.Configure<AppSetting>(Configuration.GetSection(BlogCoreConsts.AppSetting));
@@ -106,7 +107,7 @@ namespace BlogCore
         //配置是添加中间件的位置。 这称之为
         // ConfigureContainer。 您可以使用IApplicationBuilder.ApplicationServices
         //如果你需要从容器中解决问题。
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IHostApplicationLifetime lifetime)
         {
             this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
             if (env.IsDevelopment())
@@ -122,16 +123,24 @@ namespace BlogCore
             {
                 app.UseExceptionHandler("/Error");
             }
+
+#if !DEBUG
+            // 注册服务发现
+            app.RegisterConsul(lifetime);
+#endif
             // 跳转https
             app.UseHttpsRedirection();
-            app.UseRouting();
             //启用jwt认证中间件
             app.UseMiddleware<JwtMiddleware>();
             //启用签名认证中间件
             app.UseMiddleware<SignMiddleware>();
             // 返回错误码
             app.UseStatusCodePages();//把错误码返回前台，比如是404
-            app.UseMvc();
+            app.UseRouting();
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/healthz");
+            });
         }
     }
 }
