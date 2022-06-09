@@ -13,7 +13,7 @@ parameters:
   - name: appsettings
     type: string
     values:
-      - src/BlogCore.Authority/appsettings.Production.json
+      - src/BlogCore/appsettings.Production.json
   
 variables:
 - group: witeem-blog
