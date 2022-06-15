@@ -57,7 +57,8 @@ namespace BlogCore.Authority
                           new ElasticsearchSinkOptions(new Uri("http://134.175.26.46:9200"))
                           {
                               MinimumLogEventLevel = Serilog.Events.LogEventLevel.Verbose,
-                              AutoRegisterTemplate = true
+                              AutoRegisterTemplate = true,
+                              ModifyConnectionSettings = x => x.BasicAuthentication("elastic", "weitianhua")
                           }).CreateLogger();
 
             Configuration = configuration;
@@ -78,6 +79,7 @@ namespace BlogCore.Authority
             services.Configure<AppSetting>(Configuration.GetSection(BlogCoreConsts.AppSetting));
             services.Configure<JwtSettings>(Configuration.GetSection(BlogCoreConsts.JwtSettings));
             services.AddHealthChecks();
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 
             // SqlSugar
             services.AddSqlSugarSetup();
