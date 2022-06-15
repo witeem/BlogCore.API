@@ -9,9 +9,20 @@ trigger:
 resources:
 - repo: self
 
+parameters:
+  - name: appsettings
+    type: string
+    values:
+      - src/BlogCore/appsettings.Production.json
+  
 variables:
-  tag: '$(Build.BuildId)'
-  appsettings: src/BlogCore/appsettings.Production.json
+- group: witeem-blog
+- name: Connection
+  value: $[variables.ConnectionString]
+- name: Key
+  value: $[variables.ConnKey]
+- name: IV
+  value: $[variables.ConnIV]
 
 stages:
 - stage: Build
@@ -22,20 +33,19 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - script: |
-        ls $(appsettings) -l
-        chmod 666 $(appsettings)
-        sed  -i  's/{ConnectionString}/$(ConnectionString)/g'  $(appsettings)
-        sed  -i  's/{ConnKey}/$(ConnKey)/g'  $(appsettings)
-        sed  -i  's/{ConnIV}/$(ConnIV)/g'  $(appsettings)
-        echo "================= print file $(appsettings) start ===================="
-        cat $(appsettings) | while read line; do echo $line; done
-        echo "================= print file $(appsettings) end ===================="
-        echo "command executed"
     - task: CmdLine@2
       inputs:
         script: |
           cp $(Build.SourcesDirectory)/src/BlogCore/Dockerfile $(Build.SourcesDirectory)/
+          ls ${{parameters.appsettings}} -l
+          chmod 666 ${{parameters.appsettings}}
+          sed  -i  's/{ConnectionString}/$(Connection)/g'  ${{parameters.appsettings}}
+          sed  -i  's/{ConnKey}/$(Key)/g'  ${{parameters.appsettings}}
+          sed  -i  's/{ConnIV}/$(IV)/g'  ${{parameters.appsettings}}
+          echo "================= print file ${{parameters.appsettings}} start ===================="
+          cat ${{parameters.appsettings}} | while read line; do echo $line; done
+          echo "================= print file ${{parameters.appsettings}} end ===================="
+          echo "command executed"
     - task: Docker@2
       inputs:
         containerRegistry: 'mydocker'
