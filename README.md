@@ -29,6 +29,11 @@ SqlSugar  相关资料：https://www.donet5.com/Home/Doc
 
 Hangfire 相关资料：https://www.hangfire.io/
 
+### 技术栈
+
+------
+
+![image](https://user-images.githubusercontent.com/23447209/173974442-3b4e78f0-ccea-4aa6-9f09-c024752b3773.png)
 
 
 ### 相关项目
