@@ -14,6 +14,8 @@ namespace BlogCore.Core.CommonHelper.DB
     {
         public string ConnId { get; set; }
         public int HitRate { get; set; }
+
+        public bool IsSlave { get; set; }
         public string ConnectionString { get; set; }
         public DbType DbType { get; set; }
     }

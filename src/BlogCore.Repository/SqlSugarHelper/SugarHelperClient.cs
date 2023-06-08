@@ -11,15 +11,13 @@ using witeem.CoreHelper.ExtensionTools.CommonTools;
 public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEntity : class, new()
 {
     private readonly IUnitOfWork _unitOfWork;
-    private SqlSugarClient _dbClient;
-    private ISqlSugarClient _db => _dbClient;
-
-    internal ISqlSugarClient Db { get { return _db; } }
+    private readonly SqlSugarScope _sqlSugar;
+    private ISqlSugarClient Sqldb => _sqlSugar.GetConnectionScopeWithAttr<TEntity>();
 
     public SugarHelperClient(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _dbClient = unitOfWork.DbClient();
+        _sqlSugar = _unitOfWork.DbClient();
     }
 
     #region 新增操作
@@ -31,7 +29,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>受影响行数</returns>
     public async Task<int> AddAsync(TEntity entity)
     {
-        var insert = _db.Insertable(entity);
+        var insert = Sqldb.Insertable(entity);
         return await insert.ExecuteCommandAsync();
     }
 
@@ -42,7 +40,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>受影响行数</returns>
     public async Task<int> AddAsync(List<TEntity> entitys)
     {
-        return await _db.Insertable(entitys.ToArray()).ExecuteCommandAsync();
+        return await Sqldb.Insertable(entitys.ToArray()).ExecuteCommandAsync();
     }
 
     /// <summary>
@@ -52,7 +50,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>受影响行数</returns>
     public async Task<int> AddAsync(Dictionary<string, object> keyValues)
     {
-        var result = await _db.Insertable(keyValues).ExecuteCommandAsync();
+        var result = await Sqldb.Insertable(keyValues).ExecuteCommandAsync();
         return result;
     }
 
@@ -63,7 +61,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>返回当前实体</returns>
     public async Task<TEntity> AddReturnEntityAsync(TEntity entity)
     {
-        var result = await _db.Insertable(entity).ExecuteReturnEntityAsync();
+        var result = await Sqldb.Insertable(entity).ExecuteReturnEntityAsync();
         return result;
     }
 
@@ -74,7 +72,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>自增ID</returns>
     public async Task<int> AddReturnIdentityAsync(TEntity entity)
     {
-        var result = await _db.Insertable(entity).ExecuteReturnIdentityAsync();
+        var result = await Sqldb.Insertable(entity).ExecuteReturnIdentityAsync();
         return result;
     }
 
@@ -85,7 +83,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>成功或失败</returns>
     public async Task<bool> AddReturnBoolAsync(TEntity entity)
     {
-        var result = await _db.Insertable(entity).ExecuteCommandAsync() > 0;
+        var result = await Sqldb.Insertable(entity).ExecuteCommandAsync() > 0;
         return result;
     }
 
@@ -96,7 +94,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>成功或失败</returns>
     public async Task<bool> AddReturnBoolAsync(List<TEntity> entitys)
     {
-        var result = await _db.Insertable(entitys).ExecuteCommandAsync() > 0;
+        var result = await Sqldb.Insertable(entitys).ExecuteCommandAsync() > 0;
         return result;
     }
 
@@ -113,7 +111,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>受影响行数</returns>
     public async Task<int> UpdateAsync(TEntity entity, List<string> lstIgnoreColumns = null, bool isLock = true)
     {
-        IUpdateable<TEntity> up = _db.Updateable(entity);
+        IUpdateable<TEntity> up = Sqldb.Updateable(entity);
         if (lstIgnoreColumns != null && lstIgnoreColumns.Count > 0)
         {
             up = up.IgnoreColumns(lstIgnoreColumns.ToArray());
@@ -138,7 +136,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<int> UpdateAsync(List<TEntity> entitys, List<string> lstIgnoreColumns = null,
         bool isLock = true)
     {
-        IUpdateable<TEntity> up = _db.Updateable(entitys);
+        IUpdateable<TEntity> up = Sqldb.Updateable(entitys);
         if (lstIgnoreColumns != null && lstIgnoreColumns.Count > 0)
         {
             up = up.IgnoreColumns(lstIgnoreColumns.ToArray());
@@ -164,7 +162,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<int> UpdateIgnoreColumnsAsync(TEntity entity, Expression<Func<TEntity, bool>> where,
         Expression<Func<TEntity, object>> lstIgnoreColumns = null, bool isLock = true)
     {
-        IUpdateable<TEntity> up = _db.Updateable(entity);
+        IUpdateable<TEntity> up = Sqldb.Updateable(entity);
         if (lstIgnoreColumns != null)
         {
             up = up.IgnoreColumns(lstIgnoreColumns);
@@ -191,7 +189,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<int> UpdateAsync(TEntity entity, Expression<Func<TEntity, bool>> where,
         Expression<Func<TEntity, object>> columns, bool isLock = true)
     {
-        IUpdateable<TEntity> up = _db.Updateable(entity);
+        IUpdateable<TEntity> up = Sqldb.Updateable(entity);
         up = up.Where(where);
         if (isLock)
         {
@@ -219,7 +217,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<TEntity, object>> updateColumns, Expression<Func<TEntity, object>> wherecolumns = null,
         bool isLock = true)
     {
-        IUpdateable<TEntity> up = _db.Updateable(entity).UpdateColumns(updateColumns);
+        IUpdateable<TEntity> up = Sqldb.Updateable(entity).UpdateColumns(updateColumns);
         if (wherecolumns != null)
         {
             up = up.WhereColumns(wherecolumns);
@@ -246,7 +244,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<TEntity, object>> updateColumns, Expression<Func<TEntity, object>> wherecolumns = null,
         bool isLock = true)
     {
-        IUpdateable<TEntity> up = _db.Updateable(entitys).UpdateColumns(updateColumns);
+        IUpdateable<TEntity> up = Sqldb.Updateable(entitys).UpdateColumns(updateColumns);
         if (wherecolumns != null)
         {
             up = up.WhereColumns(wherecolumns);
@@ -298,7 +296,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         var codeValue = codeProperty.GetValue(entity, null).ToString();
         var sqlWhere = $" RowVer={rowVerValue} AND Code='{codeValue}'";
         rowVerProperty.SetValue(entity, rowVerValue + 1, null);
-        IUpdateable<TEntity> up = _db.Updateable(entity);
+        IUpdateable<TEntity> up = Sqldb.Updateable(entity);
         if (lstIgnoreColumns != null && lstIgnoreColumns.Count > 0)
         {
             up = up.IgnoreColumns(lstIgnoreColumns.ToArray());
@@ -347,7 +345,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
                 : $" and {item.Key}='{item.Value}'";
         }
 
-        IUpdateable<TEntity> up = _db.Updateable<TEntity>().SetColumns(update).Where(sqlWhere);
+        IUpdateable<TEntity> up = Sqldb.Updateable<TEntity>().SetColumns(update).Where(sqlWhere);
         if (isLock)
         {
             up = up.With(SqlWith.UpdLock);
@@ -369,9 +367,9 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>受影响行数</returns>
     public async Task<bool> DeleteByPrimaryAsync(object id, bool isLock = true)
     {
-        //return await _db.Deleteable<TEntity>(id).ExecuteCommandHasChangeAsync();
+        //return await Sqldb.Deleteable<TEntity>(id).ExecuteCommandHasChangeAsync();
 
-        var del = _db.Deleteable<TEntity>(id);
+        var del = Sqldb.Deleteable<TEntity>(id);
         if (isLock)
         {
             del = del.With(SqlWith.RowLock);
@@ -388,7 +386,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>受影响行数</returns>
     public async Task<int> DeleteByPrimaryAsync(List<object> primaryKeyValues, bool isLock = true)
     {
-        var del = _db.Deleteable<TEntity>().In(primaryKeyValues);
+        var del = Sqldb.Deleteable<TEntity>().In(primaryKeyValues);
         if (isLock)
         {
             del = del.With(SqlWith.RowLock);
@@ -405,7 +403,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>受影响行数</returns>
     public async Task<int> DeleteAsync(TEntity entity, bool isLock = true)
     {
-        var del = _db.Deleteable(entity);
+        var del = Sqldb.Deleteable(entity);
         if (isLock)
         {
             del = del.With(SqlWith.RowLock);
@@ -422,7 +420,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>受影响行数</returns>
     public async Task<int> DeleteAsync(List<TEntity> entitys, bool isLock = true)
     {
-        var del = _db.Deleteable(entitys);
+        var del = Sqldb.Deleteable(entitys);
         if (isLock)
         {
             del = del.With(SqlWith.RowLock);
@@ -439,7 +437,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>受影响行数</returns>
     public async Task<int> DeleteAsync(Expression<Func<TEntity, bool>> whereLambda, bool isLock = true)
     {
-        var del = _db.Deleteable<TEntity>().Where(whereLambda);
+        var del = Sqldb.Deleteable<TEntity>().Where(whereLambda);
         if (isLock)
         {
             del = del.With(SqlWith.RowLock);
@@ -456,7 +454,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>受影响行数</returns>
     public async Task<int> DeleteInAsync(List<dynamic> inValues, bool isLock = true)
     {
-        var del = _db.Deleteable<TEntity>().In(inValues);
+        var del = Sqldb.Deleteable<TEntity>().In(inValues);
         if (isLock)
         {
             del = del.With(SqlWith.RowLock);
@@ -479,7 +477,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<TResult> QueryAsync<TResult>(Expression<Func<TEntity, TResult>> expression,
         Expression<Func<TEntity, bool>> whereLambda = null)
     {
-        return await _db.Queryable<TEntity>().WhereIF(!StringHelper.IsNullOrEmpty(whereLambda), whereLambda).Select(expression)
+        return await Sqldb.Queryable<TEntity>().WhereIF(!StringHelper.IsNullOrEmpty(whereLambda), whereLambda).Select(expression)
             .FirstAsync();
     }
 
@@ -493,7 +491,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<List<TResult>> QueryListExpAsync<TResult>(Expression<Func<TEntity, TResult>> expression,
         Expression<Func<TEntity, bool>> whereLambda = null)
     {
-        return await _db.Queryable<TEntity>().WhereIF(!StringHelper.IsNullOrEmpty(whereLambda), whereLambda).Select(expression)
+        return await Sqldb.Queryable<TEntity>().WhereIF(!StringHelper.IsNullOrEmpty(whereLambda), whereLambda).Select(expression)
             .ToListAsync();
     }
 
@@ -504,7 +502,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>实体对象</returns>
     public async Task<TEntity> QueryFirstAsync(Expression<Func<TEntity, bool>> whereLambda = null)
     {
-        return await _db.Queryable<TEntity>().FirstAsync(whereLambda);
+        return await Sqldb.Queryable<TEntity>().FirstAsync(whereLambda);
     }
 
     /// <summary>
@@ -517,7 +515,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public ISugarQueryable<TEntity> QueryableAsync(Expression<Func<TEntity, bool>> whereLambda,
         Expression<Func<TEntity, object>> orderFileds = null, OrderByType orderByType = OrderByType.Desc)
     {
-        return _db.Queryable<TEntity>().WhereIF(whereLambda != null, whereLambda)
+        return Sqldb.Queryable<TEntity>().WhereIF(whereLambda != null, whereLambda)
             .OrderByIF(orderFileds != null, orderFileds, orderByType);
     }
 
@@ -531,7 +529,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<List<TEntity>> QueryListAsync(Expression<Func<TEntity, bool>> whereLambda,
         Expression<Func<TEntity, object>> orderFileds = null, OrderByType orderByType = OrderByType.Desc)
     {
-        var query = _db.Queryable<TEntity>().WhereIF(whereLambda != null, whereLambda)
+        var query = Sqldb.Queryable<TEntity>().WhereIF(whereLambda != null, whereLambda)
             .OrderByIF(orderFileds != null, orderFileds, orderByType);
         return await query.ToListAsync();
     }
@@ -543,7 +541,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>实体列表</returns>
     public async Task<List<TEntity>> QuerySqlListAsync(string sql)
     {
-        return await _db.SqlQueryable<TEntity>(sql).ToListAsync();
+        return await Sqldb.SqlQueryable<TEntity>(sql).ToListAsync();
     }
 
     /// <summary>
@@ -557,11 +555,11 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         ApiPageRequest pageRequest, Expression<Func<TEntity, TEntity>> expression = null)
     {
         RefAsync<int> totalCount = 0;
-        //var list = await _db.Queryable<TEntity>()
+        //var list = await Sqldb.Queryable<TEntity>()
         //    .WhereIF(whereLambda != null, whereLambda)
         //    .OrderByIF(!string.IsNullOrEmpty(pageRequest.SortField), pageRequest.SortField)
         //    .ToPageListAsync(pageRequest.Page, pageRequest.Size, totalCount);
-        var query = _db.Queryable<TEntity>();
+        var query = Sqldb.Queryable<TEntity>();
         query = query.WhereIF(whereLambda != null, whereLambda);
         if (expression != null)
         {
@@ -582,7 +580,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>实体列表</returns>
     public async Task<List<TEntity>> QueryListInAsync(string inFieldName, List<dynamic> inValues)
     {
-        return await _db.Queryable<TEntity>().In(inFieldName, inValues).ToListAsync();
+        return await Sqldb.Queryable<TEntity>().In(inFieldName, inValues).ToListAsync();
     }
 
     /// <summary>
@@ -609,9 +607,9 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
                     FieldName = "is_deleted", ConditionalType = ConditionalType.Equal, FieldValue = "0"
                 }
             };
-        return await _db.Queryable<TEntity>().Where(conModels).SingleAsync();
+        return await Sqldb.Queryable<TEntity>().Where(conModels).SingleAsync();
         // 这种方式不适合软删除模式
-        // return await _db.Queryable<TEntity>().InSingleAsync(id);
+        // return await Sqldb.Queryable<TEntity>().InSingleAsync(id);
     }
 
     /// <summary>
@@ -633,8 +631,8 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
                     FieldName = "is_deleted", ConditionalType = ConditionalType.Equal, FieldValue = "0"
                 }
             };
-        return await _db.Queryable<TEntity>().Where(conModels).ToListAsync();
-        //return await _db.Queryable<TEntity>().In(values).ToListAsync();
+        return await Sqldb.Queryable<TEntity>().Where(conModels).ToListAsync();
+        //return await Sqldb.Queryable<TEntity>().In(values).ToListAsync();
     }
 
     /// <summary>
@@ -644,7 +642,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>DataTable</returns>
     public async Task<DataTable> QueryDataTableAsync(Expression<Func<TEntity, bool>> whereLambda = null)
     {
-        return await _db.Queryable<TEntity>().WhereIF(!StringHelper.IsNullOrEmpty(whereLambda), whereLambda).ToDataTableAsync();
+        return await Sqldb.Queryable<TEntity>().WhereIF(!StringHelper.IsNullOrEmpty(whereLambda), whereLambda).ToDataTableAsync();
     }
 
     /// <summary>
@@ -654,7 +652,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>DataTable</returns>
     public async Task<DataTable> QueryDataTableAsync(string sql)
     {
-        return await _db.Ado.GetDataTableAsync(sql);
+        return await Sqldb.Ado.GetDataTableAsync(sql);
     }
 
     /// <summary>
@@ -664,7 +662,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>Object</returns>
     public async Task<object> QuerySqlScalarAsync(string sql)
     {
-        return await _db.Ado.GetScalarAsync(sql);
+        return await Sqldb.Ado.GetScalarAsync(sql);
     }
 
     /// <summary>
@@ -674,7 +672,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>对象.json</returns>
     public async Task<string> QueryJsonAsync(Expression<Func<TEntity, bool>> whereLambda = null)
     {
-        ISugarQueryable<TEntity> up = _db.Queryable<TEntity>();
+        ISugarQueryable<TEntity> up = Sqldb.Queryable<TEntity>();
         if (whereLambda != null)
         {
             up = up.Where(whereLambda);
@@ -692,7 +690,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, bool>> whereLambda = null, Expression<Func<T, T2, object>> groupExpression = null,
         string sortField = "")
     {
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (groupExpression != null)
         {
             query = query.GroupBy(groupExpression);
@@ -713,7 +711,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, bool>> whereLambda = null,
         Expression<Func<T, T2, T3, object>> groupExpression = null)
     {
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (groupExpression != null)
         {
             query = query.GroupBy(groupExpression);
@@ -730,7 +728,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, bool>> whereLambda = null,
         Expression<Func<T, T2, T3, T4, object>> groupExpression = null)
     {
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (!groupExpression.IsNullOrEmpty())
         {
             query = query.GroupBy(groupExpression);
@@ -747,7 +745,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, T5, bool>> whereLambda = null,
         Expression<Func<T, T2, T3, T4, T5, object>> groupExpression = null)
     {
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (!groupExpression.IsNullOrEmpty())
         {
             query = query.GroupBy(groupExpression);
@@ -764,7 +762,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, T5, T6, bool>> whereLambda = null,
         Expression<Func<T, T2, T3, T4, T5, T6, object>> groupExpression = null)
     {
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (!groupExpression.IsNullOrEmpty())
         {
             query = query.GroupBy(groupExpression);
@@ -781,7 +779,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> whereLambda = null,
         Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> groupExpression = null)
     {
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (!groupExpression.IsNullOrEmpty())
         {
             query = query.GroupBy(groupExpression);
@@ -798,7 +796,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> whereLambda = null,
         Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> groupExpression = null)
     {
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (!groupExpression.IsNullOrEmpty())
         {
             query = query.GroupBy(groupExpression);
@@ -815,7 +813,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> whereLambda = null,
         Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> groupExpression = null)
     {
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (!groupExpression.IsNullOrEmpty())
         {
             query = query.GroupBy(groupExpression);
@@ -832,7 +830,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> whereLambda = null,
         Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> groupExpression = null)
     {
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (!groupExpression.IsNullOrEmpty())
         {
             query = query.GroupBy(groupExpression);
@@ -853,7 +851,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         where T : class, new()
     {
         RefAsync<int> totalCount = 0;
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (groupExpression != null)
         {
             query = query.GroupBy(groupExpression);
@@ -872,7 +870,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, object>> groupExpression = null) where T : class, new()
     {
         RefAsync<int> totalCount = 0;
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (groupExpression != null)
         {
             query = query.GroupBy(groupExpression);
@@ -892,7 +890,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, object>> groupExpression = null) where T : class, new()
     {
         RefAsync<int> totalCount = 0;
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (groupExpression != null)
         {
             query = query.GroupBy(groupExpression);
@@ -912,7 +910,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, T5, object>> groupExpression = null) where T : class, new()
     {
         RefAsync<int> totalCount = 0;
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (groupExpression != null)
         {
             query = query.GroupBy(groupExpression);
@@ -932,7 +930,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, T5, T6, object>> groupExpression = null) where T : class, new()
     {
         RefAsync<int> totalCount = 0;
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (groupExpression != null)
         {
             query = query.GroupBy(groupExpression);
@@ -952,7 +950,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> groupExpression = null) where T : class, new()
     {
         RefAsync<int> totalCount = 0;
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (groupExpression != null)
         {
             query = query.GroupBy(groupExpression);
@@ -972,7 +970,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> groupExpression = null) where T : class, new()
     {
         RefAsync<int> totalCount = 0;
-        var query = _db.Queryable(joinExpression);
+        var query = Sqldb.Queryable(joinExpression);
         if (groupExpression != null)
         {
             query = query.GroupBy(groupExpression);
@@ -992,7 +990,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<List<TEntity>> QueryMapperAsync(Action<TEntity> mapperAction,
         Expression<Func<TEntity, bool>> whereLambda = null)
     {
-        ISugarQueryable<TEntity> up = _db.Queryable<TEntity>();
+        ISugarQueryable<TEntity> up = Sqldb.Queryable<TEntity>();
         if (whereLambda != null)
         {
             up = up.Where(whereLambda);
@@ -1006,7 +1004,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<TEntity, bool>> whereLambda, ApiPageRequest pageRequest)
     {
         RefAsync<int> totalCount = 0;
-        ISugarQueryable<TEntity> up = _db.Queryable<TEntity>();
+        ISugarQueryable<TEntity> up = Sqldb.Queryable<TEntity>();
         if (!StringHelper.IsNullOrEmpty(whereLambda))
         {
             up = up.Where(whereLambda);
@@ -1029,7 +1027,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         ApiPageRequest pageRequest)
     {
         RefAsync<int> totalCount = 0;
-        ISugarQueryable<TEntity> up = _db.Queryable<TEntity>();
+        ISugarQueryable<TEntity> up = Sqldb.Queryable<TEntity>();
         if (!StringHelper.IsNullOrEmpty(whereLambda))
         {
             up = up.Where(whereLambda);
@@ -1049,7 +1047,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<List<TEntity>> QueryMapperAsync(Action<TEntity, MapperCache<TEntity>> mapperAction,
         Expression<Func<TEntity, bool>> whereLambda, string sortField = "")
     {
-        ISugarQueryable<TEntity> up = _db.Queryable<TEntity>();
+        ISugarQueryable<TEntity> up = Sqldb.Queryable<TEntity>();
         if (!StringHelper.IsNullOrEmpty(whereLambda))
         {
             up = up.Where(whereLambda);
@@ -1068,7 +1066,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         Expression<Func<TEntity, bool>> whereLambda, ApiPageRequest pageRequest)
     {
         RefAsync<int> totalCount = 0;
-        ISugarQueryable<TEntity> up = _db.Queryable<TEntity>();
+        ISugarQueryable<TEntity> up = Sqldb.Queryable<TEntity>();
         if (!StringHelper.IsNullOrEmpty(whereLambda))
         {
             up = up.Where(whereLambda);
@@ -1098,7 +1096,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<DataSet> QueryProcedureDataSetAsync(string procedureName, List<SqlParameter> parameters)
     {
         var listParams = ConvetParameter(parameters);
-        var datas = await _db.Ado.UseStoredProcedure().GetDataSetAllAsync(procedureName, listParams);
+        var datas = await Sqldb.Ado.UseStoredProcedure().GetDataSetAllAsync(procedureName, listParams);
         return datas;
     }
 
@@ -1111,7 +1109,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<DataTable> QueryProcedureAsync(string procedureName, List<SqlParameter> parameters)
     {
         var listParams = ConvetParameter(parameters);
-        var datas = await _db.Ado.UseStoredProcedure().GetDataTableAsync(procedureName, listParams);
+        var datas = await Sqldb.Ado.UseStoredProcedure().GetDataTableAsync(procedureName, listParams);
         return datas;
     }
 
@@ -1124,7 +1122,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     public async Task<object> QueryProcedureScalarAsync(string procedureName, List<SqlParameter> parameters)
     {
         var listParams = ConvetParameter(parameters);
-        var datas = await _db.Ado.UseStoredProcedure().GetScalarAsync(procedureName, listParams);
+        var datas = await Sqldb.Ado.UseStoredProcedure().GetScalarAsync(procedureName, listParams);
         return datas;
     }
 
@@ -1140,7 +1138,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>泛型对象集合</returns>
     public async Task<List<TEntity>> TakeAsync(int topNum, Expression<Func<TEntity, bool>> whereLambda = null)
     {
-        return await _db.Queryable<TEntity>().WhereIF(!StringHelper.IsNullOrEmpty(whereLambda), whereLambda).Take(topNum)
+        return await Sqldb.Queryable<TEntity>().WhereIF(!StringHelper.IsNullOrEmpty(whereLambda), whereLambda).Take(topNum)
             .ToListAsync();
     }
 
@@ -1151,7 +1149,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>True or False</returns>
     public async Task<bool> IsExistAsync(Expression<Func<TEntity, bool>> whereLambda = null)
     {
-        return await _db.Queryable<TEntity>().WhereIF(!StringHelper.IsNullOrEmpty(whereLambda), whereLambda).AnyAsync();
+        return await Sqldb.Queryable<TEntity>().WhereIF(!StringHelper.IsNullOrEmpty(whereLambda), whereLambda).AnyAsync();
     }
 
     /// <summary>
@@ -1161,7 +1159,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>总和</returns>
     public async Task<int> SumAsync(string field)
     {
-        return await _db.Queryable<TEntity>().SumAsync<int>(field);
+        return await Sqldb.Queryable<TEntity>().SumAsync<int>(field);
     }
 
     /// <summary>
@@ -1172,7 +1170,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>最大值</returns>
     public async Task<TResult> MaxAsync<TResult>(string field)
     {
-        return await _db.Queryable<TEntity>().MaxAsync<TResult>(field);
+        return await Sqldb.Queryable<TEntity>().MaxAsync<TResult>(field);
     }
 
     /// <summary>
@@ -1183,7 +1181,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>最小值</returns>
     public async Task<TResult> MinAsync<TResult>(string field)
     {
-        return await _db.Queryable<TEntity>().MinAsync<TResult>(field);
+        return await Sqldb.Queryable<TEntity>().MinAsync<TResult>(field);
     }
 
     /// <summary>
@@ -1193,7 +1191,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
     /// <returns>平均值</returns>
     public async Task<int> AvgAsync(string field)
     {
-        return await _db.Queryable<TEntity>().AvgAsync<int>(field);
+        return await Sqldb.Queryable<TEntity>().AvgAsync<int>(field);
     }
 
     #endregion
@@ -1213,7 +1211,7 @@ public class SugarHelperClient<TEntity> : ISugarHelperClient<TEntity> where TEnt
         List<string> numbers = new List<string>();
         var dateValue = dateFomart == "" ? "" : DateTime.Now.ToString(dateFomart);
         var fix = prefix.ToUpper() + dateValue;
-        var maxValue = await _db.Queryable<TEntity>()
+        var maxValue = await Sqldb.Queryable<TEntity>()
             .Where(key + " LIKE '" + fix + "%' AND LEN(" + key + ")=" + (fix.Length + fixedLength)).Select(key)
             .MaxAsync<string>(key);
 

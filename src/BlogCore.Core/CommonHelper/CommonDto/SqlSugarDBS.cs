@@ -19,6 +19,8 @@ namespace BlogCore.Core.CommonHelper.CommonDto
 
         public bool Enabled { get; set; }
 
+        public bool IsSlave { get; set; }
+
         public string ConnectionString { get; set; }
     }
 }

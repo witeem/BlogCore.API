@@ -16,9 +16,9 @@ public class UnitOfWork : IUnitOfWork
     /// 获取DB，保证唯一性
     /// </summary>
     /// <returns></returns>
-    public SqlSugarClient DbClient()
+    public SqlSugarScope DbClient()
     {
-        return _sqlSugarClient as SqlSugarClient;
+        return _sqlSugarClient as SqlSugarScope;
     }
 
     public void BeginTran()

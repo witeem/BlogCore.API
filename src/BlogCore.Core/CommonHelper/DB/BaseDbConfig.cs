@@ -16,14 +16,15 @@ namespace BlogCore.Core.CommonHelper.DB
 {
     public static class BaseDbConfig
     {
-        public static (DataBaseOperate MasterDb, List<DataBaseOperate> SlaveDbs) GetDataBaseOperate =>
+        public static (DataBaseOperate MasterDb, List<DataBaseOperate> SlaveDbs, List<DataBaseOperate> OtherDbs) GetDataBaseOperate =>
             InitDataBaseConn();
 
-        private static (DataBaseOperate, List<DataBaseOperate>) InitDataBaseConn()
+        private static (DataBaseOperate, List<DataBaseOperate>, List<DataBaseOperate>) InitDataBaseConn()
         {
             DataBaseOperate masterDb = null;
             var slaveDbs = new List<DataBaseOperate>();
             var allDbs = new List<DataBaseOperate>();
+            List<DataBaseOperate> otherDbs = new();
             List<SqlSugarDBS> sugarDBs = ConfigManagerHelper.GetSection<List<SqlSugarDBS>>("SqlSugarDBS");
             var appSetting = ConfigManagerHelper.GetSection<AppSetting>(BlogCoreConsts.AppSetting);
             if (sugarDBs.Any())
@@ -32,19 +33,12 @@ namespace BlogCore.Core.CommonHelper.DB
                 {
                     if (item.Enabled)
                     {
-                        //AESEncryptOut encryptOut = new AESEncryptOut()
-                        //{
-                        //    Content = item.ConnectionString,
-                        //    Key = appSetting.ConnKey,
-                        //    Iv = appSetting.ConnIV
-                        //};
-                        //string connStr = EncyptHelper.AESDecrypt(encryptOut.Content, encryptOut.Key, encryptOut.Iv);
-
                         allDbs.Add(new DataBaseOperate
                         {
                             ConnId =item.ConnId,
                             HitRate = item.HitRate,
                             ConnectionString = item.ConnectionString,
+                            IsSlave = item.IsSlave,
                             DbType = (DbType)item.DBType
                         });
                     }
@@ -74,8 +68,8 @@ namespace BlogCore.Core.CommonHelper.DB
                 }
             }
 
-
-            return (masterDb, slaveDbs);
+            otherDbs = allDbs.Where(x => x.ConnId != mainDB && !x.IsSlave).ToList();
+            return (masterDb, slaveDbs, otherDbs);
         }
     }
 }

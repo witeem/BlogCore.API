@@ -2,7 +2,7 @@
 using SqlSugar;
 public interface IUnitOfWork : IRepositoryCore
 {
-    SqlSugarClient DbClient();
+    SqlSugarScope DbClient();
 
     void BeginTran();
 

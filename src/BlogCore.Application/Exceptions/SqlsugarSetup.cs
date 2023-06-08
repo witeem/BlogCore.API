@@ -24,6 +24,7 @@ namespace BlogCore.Application.Exceptions
                 ConnectionConfig masterDb = null; //主库
                 // 从库
                 var slaveDbs = new List<SlaveConnectionConfig>(); //从库列表
+                List<ConnectionConfig> connConfigs = new List<ConnectionConfig>();
                 BaseDbConfig.GetDataBaseOperate.SlaveDbs.ForEach(s =>
                 {
                     slaveDbs.Add(new SlaveConnectionConfig()
@@ -36,37 +37,20 @@ namespace BlogCore.Application.Exceptions
                 // 主库
                 if (BaseDbConfig.GetDataBaseOperate.MasterDb != null)
                 {
-                    masterDb = new ConnectionConfig
-                    {
-                        ConfigId = BaseDbConfig.GetDataBaseOperate.MasterDb.ConnId.ToLower(),
-                        ConnectionString = BaseDbConfig.GetDataBaseOperate.MasterDb.ConnectionString,
-                        DbType = BaseDbConfig.GetDataBaseOperate.MasterDb.DbType,
-                        IsAutoCloseConnection = true,
-                        AopEvents = new AopEvents
-                        {
-                            OnLogExecuting = (sql, pars) => //执行前
-                            {
-                                Parallel.For(0, 1, _ =>
-                                {
-                                    if (ConfigManagerHelper.GetValue("IsSqlAOP") == "true")
-                                    {
-                                        LogHelper.WriteSqlLog($"SqlLog{DateTime.Now:yyyy-MM-dd}",
-                                            new[] { "【SQL参数】：\n" + GetParams(pars), "【SQL语句】" + sql });
-                                    }
-                                });
-                            }
-                            //OnLogExecuted = //执行完毕
-                        },
-                        MoreSettings = new ConnMoreSettings
-                        {
-                            IsAutoRemoveDataCache = true
-                        },
-                        // 从库
-                        SlaveConnectionConfigs = slaveDbs
-                    };
+                    masterDb = CreateDbConfig(BaseDbConfig.GetDataBaseOperate.MasterDb);
+                    masterDb.SlaveConnectionConfigs = slaveDbs;
                 }
 
-                return new SqlSugarClient(masterDb);
+                connConfigs.Add(masterDb);
+
+                // 其他数据库
+                if (BaseDbConfig.GetDataBaseOperate.OtherDbs?.Count > 0)
+                {
+                    BaseDbConfig.GetDataBaseOperate.OtherDbs.ForEach(item => connConfigs.Add(CreateDbConfig(item)));
+                }
+
+                SqlSugarScope sqlSugar = new SqlSugarScope(connConfigs);
+                return sqlSugar;
             });
         }
 
@@ -78,6 +62,48 @@ namespace BlogCore.Application.Exceptions
         private static string GetParams(SugarParameter[] pars)
         {
             return pars.Aggregate("", (current, p) => current + $"{p.ParameterName}:{p.Value}\n");
+        }
+
+        private static ConnectionConfig CreateDbConfig(DataBaseOperate item)
+        {
+            return new ConnectionConfig
+            {
+                ConfigId = item.ConnId,
+                ConnectionString = item.ConnectionString,
+                DbType = item.DbType,
+                IsAutoCloseConnection = true,
+                AopEvents = new AopEvents
+                {
+                    //执行前
+                    OnLogExecuting = (sql, pars) =>
+                    {
+                        _ = Parallel.For(0, 1, _ =>
+                        {
+                            if (ConfigManagerHelper.GetSection<bool>("IsSqlAOP"))
+                            {
+                                LogHelper.WriteSqlLog($"SqlLog{DateTime.Now:yyyy-MM-dd}",
+                                    new[] { $"【Sql Executeting】{DateTime.Now.ToString("G")} \n【SQL parameters inquiry】：\n" + GetParams(pars), "【T-SQL】" + sql });
+                            }
+                        });
+                    },
+
+                    //执行完毕
+                    OnLogExecuted = (sql, pars) => {
+                        _ = Parallel.For(0, 1, _ =>
+                        {
+                            if (ConfigManagerHelper.GetSection<bool>("IsSqlAOP"))
+                            {
+                                LogHelper.WriteSqlLog($"SqlLog{DateTime.Now:yyyy-MM-dd}",
+                                    new[] { $"【Sql Executed】 {DateTime.Now.ToString("G")}" });
+                            }
+                        });
+                    }
+                },
+                MoreSettings = new ConnMoreSettings
+                {
+                    IsAutoRemoveDataCache = true
+                },
+            };
         }
     }
 }
